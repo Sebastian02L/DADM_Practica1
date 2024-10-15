@@ -11,6 +11,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHost
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.dadm_juego1_grupoa.Scenes.BodyContent
+import com.example.dadm_juego1_grupoa.Scenes.Navigation
+import com.example.dadm_juego1_grupoa.Scenes.Screen
 import com.example.dadm_juego1_grupoa.ui.theme.DADM_juego1_GrupoATheme
 
 class MainActivity : ComponentActivity() {
@@ -19,29 +26,19 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             DADM_juego1_GrupoATheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                Navigation()
             }
         }
     }
 }
 
+/*
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    DADM_juego1_GrupoATheme {
-        Greeting("Android")
+fun Navigation(){
+    val navController = rememberNavController()
+    NavHost(navController, startDestination = Screen.MainMenu.route){
+        composable(route = Screen.MainMenu.route){
+            BodyContent(navController)
+        }
     }
-}
+}*/

@@ -45,7 +45,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.material.icons.filled.ExpandLess
+import androidx.navigation.NavController
 //import androidx.compose.material.icons.filled.ExpandMore
 import com.example.dadm_juego1_grupoa.ui.theme.DADM_juego1_GrupoATheme
 
@@ -60,7 +60,7 @@ fun StartScreen(navController: NavController){
 
 //Contenido de la escena Start Screen
 @Composable
-fun BodyContentRanking(/*navController: NavController*/){
+fun BodyContentRanking(navController: NavController){
     //ESTILOS
     val colors = listOf(Color(0xFF1F6D78), Color(0xFFFFFFFF)) // Colores del degradado
     val brush = Brush.sweepGradient(colors, Offset.Zero)
@@ -179,7 +179,7 @@ private fun CardContent(name:String, modifier: Modifier)
          {
              Text(if(!expanded.value) "Soy Un Botón Inutil" else "Sigo sin hacer mucho")
          }*/
-        IconButton(onClick = {expanded.value = !expanded.value })
+        /*IconButton(onClick = {expanded.value = !expanded.value })
         {
             Icon(
                 imageVector = if(expanded.value)Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
@@ -189,14 +189,14 @@ private fun CardContent(name:String, modifier: Modifier)
                     stringResource((R.string.showMore))
 
             )
-        }
+        }*/
     }
 }
 
-@Preview(showBackground = true)
+/*@Preview(showBackground = true)
 @Composable
 fun RankingPrev() {
     DADM_juego1_GrupoATheme {
         BodyContentRanking()
     }
-}
+}*/

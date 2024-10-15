@@ -30,7 +30,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.TextStyle
-import com.example.dadm_juego1_grupoa.Greeting
+import androidx.navigation.NavController
 import com.example.dadm_juego1_grupoa.ui.theme.DADM_juego1_GrupoATheme
 
 //Escena del menú principal
@@ -44,7 +44,7 @@ fun StartScreen(navController: NavController){
 
 //Contenido de la escena Start Screen
 @Composable
-fun BodyContent(/*navController: NavController*/){
+fun BodyContent(navController: NavController){
     //ESTILOS
     val colors = listOf(Color(0xFF1F6D78), Color(0xFFFFFFFF)) // Colores del degradado
     val brush = Brush.sweepGradient(colors, Offset.Zero)
@@ -101,6 +101,7 @@ fun BodyContent(/*navController: NavController*/){
         }
         ElevatedButton(
             onClick = {
+                navController.navigate(Screen.Ranking.route)
                 //FUNCION DE PASO ESCENAS CON navController (recordar usar el mediaPlayer?.start justo después)
 
             },
@@ -139,10 +140,10 @@ fun BodyContent(/*navController: NavController*/){
     }
 }
 
-@Preview
+/*@Preview
 @Composable
 fun MainMenuPrev() {
     DADM_juego1_GrupoATheme {
         BodyContent()
     }
-}
+}*/
