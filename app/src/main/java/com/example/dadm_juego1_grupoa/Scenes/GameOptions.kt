@@ -23,6 +23,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
@@ -42,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.compose.runtime.*
+import androidx.compose.ui.input.pointer.motionEventSpy
 import androidx.compose.ui.text.font.createFontFamilyResolver
 
 var playerName = ""
@@ -54,37 +56,38 @@ fun BodyContentGameOptions(navController: NavController){
 
     val colors = listOf(Color(0xFF1F6D78), Color(0xFFFFFFFF)) // Colores del degradado
     val brush = Brush.sweepGradient(colors, Offset.Zero)
-    //Variable que actualzia lo que esribe el jugador
+    //Variable que actualiza lo que escribe el jugador en el inputfield
     var playerNameInput by remember { mutableStateOf("") }
 
     //Columna que almacenará las tarjetas de la interfaz
     Column(modifier = Modifier.fillMaxSize()
         .background(brush)
-        .padding(top = 20.dp),
+        .padding(top = 25.dp), //Distancia a la zona superior de la pantalla
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally){
 
-        // Fila con boton para salir y titulo
-        Row(modifier = Modifier.fillMaxWidth().padding(vertical = 15.dp),
+        //Fila con el boton para salir y titulo de la pantalla
+        Row(modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center){
             //Boton de salir
-            Button(
+            ElevatedButton(
                 onClick ={ navController.navigate(Screen.MainMenu.route)},
                 shape = CircleShape,
                 colors = ButtonDefaults.buttonColors(Color.White),
                 modifier = Modifier.size(50.dp)
-            ){ }
-            CreateMainTitleCard("Ajustes de la Partida")
+            ){}
+            //Padding con lo que tiene arriba 
+            CreateMainTitleCard("Ajustes de la Partida", Modifier.padding(start = 25.dp))
         }
 
-        //Tarjeta de Seleccionar Categoria
-        CreateTitleCard("Categoría de las Preguntas")
+        //Tarjeta de Seleccionar Categoria   //Padding con lo que tiene arriba y con lo que tiene debajo
+        CreateTitleCard("Categoría de las Preguntas", Modifier.padding(top = 35.dp, bottom = 10.dp))
 
         //Card desplegable para seleccionar la categoria
         Dropdown()
 
         //Tarjeta de Cantidad de Preguntas
-        CreateTitleCard("Cantidad de Preguntas")
+        CreateTitleCard("Cantidad de Preguntas", Modifier.padding(top = 35.dp, bottom = 10.dp))
 
         //Fila para seleccionar cantidad de preguntas
         Row(modifier = Modifier.fillMaxWidth().padding(bottom = 25.dp),
@@ -95,7 +98,7 @@ fun BodyContentGameOptions(navController: NavController){
         }
 
         //Tarjeta de seleccion de dificultad
-        CreateTitleCard("Dificultad de las Preguntas")
+        CreateTitleCard("Dificultad de las Preguntas", Modifier.padding(top = 35.dp, bottom = 10.dp))
 
         //Fila para seleccionar difficultad de las preguntas
         Row(modifier = Modifier.fillMaxWidth().padding(bottom = 25.dp),
@@ -106,24 +109,23 @@ fun BodyContentGameOptions(navController: NavController){
         }
 
         //Tarjeta de insertar nombre
-        CreateTitleCard("Nombre del Jugador")
+        CreateTitleCard("Nombre del Jugador", Modifier.padding(top = 35.dp, bottom = 10.dp))
         TextField(value = playerNameInput,
             modifier = Modifier.padding(bottom = 15.dp),
             onValueChange = { playerNameInput = it
                 playerName = playerNameInput},
-            label = {Text("Introduce tu nombre...",
-                color = Color.Black)})
+            label = {Text("Introduce tu nombre...", color = Color.Black)})
 
         StartGameButton("¡Comenzar Partida!")
     }
 }
 
 @Composable
-fun CreateMainTitleCard(title : String){
+fun CreateMainTitleCard(title : String, modifier: Modifier = Modifier){
     OutlinedCard(colors = CardDefaults.cardColors(
         containerColor = MaterialTheme.colorScheme.surface ),
         border = BorderStroke(5.dp, Color.Black),
-        modifier = Modifier.size(width = 240.dp, height = 50.dp).padding( horizontal = 20.dp),
+        modifier = modifier.size(width = 250.dp, height = 50.dp),
         shape = RoundedCornerShape(30.dp)
     ) {
         //Contenedor para poder alinear el text dentro de la tarjeta
@@ -143,11 +145,11 @@ fun CreateMainTitleCard(title : String){
 }
 
 @Composable
-fun CreateTitleCard(title : String){
+fun CreateTitleCard(title : String, modifier : Modifier = Modifier){
     OutlinedCard(
         colors = CardDefaults.cardColors(Color.White,),
         border = BorderStroke(5.dp, Color.Black),
-        modifier = Modifier.size(width = 270.dp, height = 50.dp).padding(bottom = 5.dp),
+        modifier = modifier.size(width = 270.dp, height = 50.dp),
         shape = RoundedCornerShape(30.dp)
     ) {
         //Contenedor para poder alinear el text dentro de la tarjeta
@@ -168,7 +170,7 @@ fun CreateTitleCard(title : String){
 
 @Composable
 fun CreateNumberButton(number : Int){
-    Button(modifier = Modifier.size(width = 80.dp, height = 50.dp).padding(horizontal = 5.dp),
+    ElevatedButton(modifier = Modifier.size(width = 80.dp, height = 50.dp).padding(horizontal = 5.dp),
         onClick =  { selectedNumber = number },
         colors = ButtonDefaults.buttonColors(Color.White)) {
         Text(text = "${number}",
@@ -180,12 +182,12 @@ fun CreateNumberButton(number : Int){
 
 @Composable
 fun CreateStringButton(text : String){
-    Button(modifier = Modifier.size(width = 100.dp, height = 50.dp).padding(horizontal = 5.dp),
+    ElevatedButton(modifier = Modifier.size(width = 110.dp, height = 60.dp).padding(horizontal = 5.dp),
         onClick =  { difficultySelected = text },
         colors = ButtonDefaults.buttonColors(Color.White)) {
         Text(text = "${text}",
             style = TextStyle(
-                fontSize = 14.sp,
+                fontSize = 18.sp,
                 fontWeight = FontWeight.Bold, color = Color.Black))
     }
 }
@@ -202,7 +204,7 @@ fun Dropdown() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Botón para mostrar el menú desplegable
-        Button(modifier = Modifier.size(width = 250.dp, height = 40.dp),
+        ElevatedButton(modifier = Modifier.size(width = 250.dp, height = 40.dp),
             onClick =  { expanded = true },
             colors = ButtonDefaults.buttonColors(Color.White)) {
             Text(text = selectedOption,
@@ -235,7 +237,7 @@ fun Dropdown() {
 
 @Composable
 fun StartGameButton(text : String){
-    Button(modifier = Modifier.size(width = 250.dp, height = 50.dp).padding(horizontal = 5.dp),
+    ElevatedButton(modifier = Modifier.size(width = 250.dp, height = 50.dp).padding(horizontal = 5.dp),
         onClick =  { },
         colors = ButtonDefaults.buttonColors(Color.White)) {
         Text(text = "${text}",
@@ -245,3 +247,8 @@ fun StartGameButton(text : String){
     }
 }
 
+/*@Preview
+@Composable
+fun prev(){
+    BodyContentGameOptions()
+}*/
