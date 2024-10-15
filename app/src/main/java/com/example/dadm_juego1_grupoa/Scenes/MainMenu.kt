@@ -119,6 +119,30 @@ fun BodyContent(navController: NavController){
                 color = Color.White
             )
         }
+
+        //BOTON PARA IR A RESULTADOS, NO ESTARA AQUI EN LA VER FINAL
+     /*   ElevatedButton(
+            onClick = {
+                navController.navigate(Screen.Score.route)
+                //FUNCION DE PASO ESCENAS CON navController (recordar usar el mediaPlayer?.start justo después)
+
+            },
+            modifier = Modifier.padding(16.dp),
+            shape = MaterialTheme.shapes.medium,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF2AA896)
+            )
+        ) {
+            Text(
+                text = "Resultados",
+                fontSize = 32.sp,
+                fontWeight = FontWeight.Bold,
+//                fontFamily = montserratFontFamily,
+                color = Color.White
+            )
+        }
+      */
+
         ElevatedButton(
             onClick = {
                 //FUNCION DE PASO ESCENAS CON navController (recordar usar el mediaPlayer?.start justo después)
@@ -137,6 +161,8 @@ fun BodyContent(navController: NavController){
                 color = Color.White
             )
         }
+
+
     }
 }
 
