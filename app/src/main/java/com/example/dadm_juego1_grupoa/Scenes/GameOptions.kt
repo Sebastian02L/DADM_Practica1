@@ -1,0 +1,247 @@
+package com.example.dadm_juego1_grupoa.Scenes
+
+import android.graphics.Paint.Align
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.compose.runtime.*
+import androidx.compose.ui.text.font.createFontFamilyResolver
+
+var playerName = ""
+var selectedCategory = ""
+var selectedNumber = 0
+var difficultySelected = ""
+
+@Composable
+fun BodyContentGameOptions(navController: NavController){
+
+    val colors = listOf(Color(0xFF1F6D78), Color(0xFFFFFFFF)) // Colores del degradado
+    val brush = Brush.sweepGradient(colors, Offset.Zero)
+    //Variable que actualzia lo que esribe el jugador
+    var playerNameInput by remember { mutableStateOf("") }
+
+    //Columna que almacenará las tarjetas de la interfaz
+    Column(modifier = Modifier.fillMaxSize()
+        .background(brush)
+        .padding(top = 20.dp),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally){
+
+        // Fila con boton para salir y titulo
+        Row(modifier = Modifier.fillMaxWidth().padding(vertical = 15.dp),
+            horizontalArrangement = Arrangement.Center){
+            //Boton de salir
+            Button(
+                onClick ={ navController.navigate(Screen.MainMenu.route)},
+                shape = CircleShape,
+                colors = ButtonDefaults.buttonColors(Color.White),
+                modifier = Modifier.size(50.dp)
+            ){ }
+            CreateMainTitleCard("Ajustes de la Partida")
+        }
+
+        //Tarjeta de Seleccionar Categoria
+        CreateTitleCard("Categoría de las Preguntas")
+
+        //Card desplegable para seleccionar la categoria
+        Dropdown()
+
+        //Tarjeta de Cantidad de Preguntas
+        CreateTitleCard("Cantidad de Preguntas")
+
+        //Fila para seleccionar cantidad de preguntas
+        Row(modifier = Modifier.fillMaxWidth().padding(bottom = 25.dp),
+            horizontalArrangement = Arrangement.Center){
+            CreateNumberButton(10)
+            CreateNumberButton(15)
+            CreateNumberButton(20)
+        }
+
+        //Tarjeta de seleccion de dificultad
+        CreateTitleCard("Dificultad de las Preguntas")
+
+        //Fila para seleccionar difficultad de las preguntas
+        Row(modifier = Modifier.fillMaxWidth().padding(bottom = 25.dp),
+            horizontalArrangement = Arrangement.Center){
+            CreateStringButton("Fácil")
+            CreateStringButton("Media")
+            CreateStringButton("Díficil")
+        }
+
+        //Tarjeta de insertar nombre
+        CreateTitleCard("Nombre del Jugador")
+        TextField(value = playerNameInput,
+            modifier = Modifier.padding(bottom = 15.dp),
+            onValueChange = { playerNameInput = it
+                playerName = playerNameInput},
+            label = {Text("Introduce tu nombre...",
+                color = Color.Black)})
+
+        StartGameButton("¡Comenzar Partida!")
+    }
+}
+
+@Composable
+fun CreateMainTitleCard(title : String){
+    OutlinedCard(colors = CardDefaults.cardColors(
+        containerColor = MaterialTheme.colorScheme.surface ),
+        border = BorderStroke(5.dp, Color.Black),
+        modifier = Modifier.size(width = 240.dp, height = 50.dp).padding( horizontal = 20.dp),
+        shape = RoundedCornerShape(30.dp)
+    ) {
+        //Contenedor para poder alinear el text dentro de la tarjeta
+        Box(
+            modifier = Modifier.fillMaxSize(), // El Box ocupa todo el tamaño de la Card
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "${title}",
+                modifier = Modifier,
+                style = TextStyle(
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold)
+            )
+        }
+    }
+}
+
+@Composable
+fun CreateTitleCard(title : String){
+    OutlinedCard(
+        colors = CardDefaults.cardColors(Color.White,),
+        border = BorderStroke(5.dp, Color.Black),
+        modifier = Modifier.size(width = 270.dp, height = 50.dp).padding(bottom = 5.dp),
+        shape = RoundedCornerShape(30.dp)
+    ) {
+        //Contenedor para poder alinear el text dentro de la tarjeta
+        Box(
+            modifier = Modifier.fillMaxSize(), // El Box ocupa todo el tamaño de la Card
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "${title}",
+                modifier = Modifier,
+                style = TextStyle(
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold)
+            )
+        }
+    }
+}
+
+@Composable
+fun CreateNumberButton(number : Int){
+    Button(modifier = Modifier.size(width = 80.dp, height = 50.dp).padding(horizontal = 5.dp),
+        onClick =  { selectedNumber = number },
+        colors = ButtonDefaults.buttonColors(Color.White)) {
+        Text(text = "${number}",
+            style = TextStyle(
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold, color = Color.Black))
+    }
+}
+
+@Composable
+fun CreateStringButton(text : String){
+    Button(modifier = Modifier.size(width = 100.dp, height = 50.dp).padding(horizontal = 5.dp),
+        onClick =  { difficultySelected = text },
+        colors = ButtonDefaults.buttonColors(Color.White)) {
+        Text(text = "${text}",
+            style = TextStyle(
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold, color = Color.Black))
+    }
+}
+
+@Composable
+fun Dropdown() {
+    // Estado para el menú desplegable
+    var expanded by remember { mutableStateOf(false) }
+    var selectedOption by remember { mutableStateOf("Pulsa para seleccionar") }
+
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(bottom = 15.dp),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        // Botón para mostrar el menú desplegable
+        Button(modifier = Modifier.size(width = 250.dp, height = 40.dp),
+            onClick =  { expanded = true },
+            colors = ButtonDefaults.buttonColors(Color.White)) {
+            Text(text = selectedOption,
+                style = TextStyle(
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold, color = Color.Black))
+        }
+        Spacer(modifier = Modifier.height(8.dp)) // Espacio entre el botón y el menú
+        // Menú desplegable
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false } // Cierra el menú si se hace clic fuera
+        ) {
+            // Opciones del menú
+            val options = listOf("Entretenimiento", "Cultura General")
+
+            for (option in options) {
+                DropdownMenuItem(
+                    text = { Text(text = option) }, // Cambiar el uso aquí
+                    onClick = {
+                        selectedOption = option // Actualiza la opción seleccionada
+                        selectedCategory = selectedOption
+                        expanded = false // Cierra el menú después de seleccionar
+                    }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun StartGameButton(text : String){
+    Button(modifier = Modifier.size(width = 250.dp, height = 50.dp).padding(horizontal = 5.dp),
+        onClick =  { },
+        colors = ButtonDefaults.buttonColors(Color.White)) {
+        Text(text = "${text}",
+            style = TextStyle(
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold, color = Color.Black))
+    }
+}
+

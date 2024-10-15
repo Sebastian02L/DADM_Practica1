@@ -18,6 +18,10 @@ fun Navigation(){
             BodyContentRanking(navController)
         }
 
+        composable(route = Screen.GameOptions.route){
+            BodyContentGameOptions(navController)
+        }
+
         //Cuando se cree la pantalla de juego se tiene que cabiar el start destination.
         composable(route = Screen.Score.route){
             BodyContentScore(navController)

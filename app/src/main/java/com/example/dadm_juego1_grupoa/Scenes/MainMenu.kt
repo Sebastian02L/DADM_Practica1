@@ -83,7 +83,7 @@ fun BodyContent(navController: NavController){
         ElevatedButton(
             onClick = {
                 //FUNCION DE PASO ESCENAS CON navController (recordar usar el mediaPlayer?.start justo después)
-
+                navController.navigate(Screen.GameOptions.route)
             },
             modifier = Modifier.padding(16.dp),
             shape = MaterialTheme.shapes.medium,
