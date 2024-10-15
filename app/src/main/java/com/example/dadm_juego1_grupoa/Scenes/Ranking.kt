@@ -8,6 +8,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,8 +28,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.Alignment
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -38,6 +43,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -46,6 +53,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.TextStyle
 import androidx.navigation.NavController
+import androidx.compose.material3.Surface
+import androidx.compose.animation.core.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.graphics.graphicsLayer
+import kotlinx.coroutines.delay
+
 //import androidx.compose.material.icons.filled.ExpandMore
 import com.example.dadm_juego1_grupoa.ui.theme.DADM_juego1_GrupoATheme
 
@@ -60,7 +73,9 @@ fun StartScreen(navController: NavController){
 
 //Contenido de la escena Start Screen
 @Composable
-fun BodyContentRanking(navController: NavController){
+fun BodyContentRanking(navController: NavController,
+                       categorias : List<String> = listOf( "Entretenimiento", "Cultura General"))
+{
     //ESTILOS
     val colors = listOf(Color(0xFF1F6D78), Color(0xFFFFFFFF)) // Colores del degradado
     val brush = Brush.sweepGradient(colors, Offset.Zero)
@@ -113,20 +128,21 @@ fun BodyContentRanking(navController: NavController){
             )
         }
 
+        //TARJETAS PARA LOS RESULTADOS (2 tarjetas deplegables con 3 puestos)
         Card(colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primary
+            containerColor =  Color.Transparent
         ),
-            modifier = Modifier.padding(vertical=4.dp, horizontal = 8.dp)
+            modifier = Modifier.padding(vertical=0.dp, horizontal = 0.dp
+            )
+
         ){
-            CardContent("tipo", modifier = Modifier)
+            for(cat in categorias){
+                CardContent( name = cat, modifier=Modifier)
 
+                Spacer(modifier = Modifier.height(16.dp))
+            }
         }
-
-
     }
-
-
-
 }
 
 
@@ -137,48 +153,91 @@ private fun CardContent(name:String, modifier: Modifier)
     //var expanded = remember{mutableStateOf(false)};//con esta funcion, se guarda el estado
     var expanded = rememberSaveable(){mutableStateOf(false)};//con esta funcion, se guarda el estado
     //val buttonPadding = if(expanded.value)48.dp else 0.dp;
+    val rotationAnimation = remember { Animatable(0f) }///////
+
+    ///////////////////////***************////////////////////////////
+    // Un efecto de lanzamiento que aplica una animación de sacudida
+    LaunchedEffect(expanded.value) {
+        if (!expanded.value) {
+            while (true) {
+                rotationAnimation.animateTo(
+                    targetValue = 5f,
+                    animationSpec = keyframes {
+                        durationMillis = 600
+                        0f at 0
+                        5f at 200
+                        -5f at 400
+                        0f at 600
+                    }
+                )
+                delay(2000)  // Tiempo antes de volver a iniciar la rotación
+            }
+        } else {
+            // Detiene la animación cuando se expande
+            rotationAnimation.stop()
+            rotationAnimation.snapTo(0f)  // Asegúrate de estar en la posición original
+        }
+    }
+    ///////////////////////***************////////////////////////////
 
 
-
-    /*val buttonPadding by animateDpAsState (
-            if(expanded.value)48.dp else 0.dp,
-            animationSpec = spring(
-                dampingRatio = Spring.DampingRatioHighBouncy,
-                stiffness = Spring.StiffnessLow
-            )
-        ); //para animación
-        Surface (color = MaterialTheme.colorScheme.primary ,
+    Surface (color = MaterialTheme.colorScheme.primary ,
+            shape = RoundedCornerShape(16.dp),
             modifier = modifier.padding(vertical = 4.dp, horizontal = 8.dp))
         {
 
-     */
+
     Row (modifier=Modifier.padding(12.dp)
         .animateContentSize(animationSpec = spring(
             dampingRatio = Spring.DampingRatioHighBouncy,
             stiffness = Spring.StiffnessLow))
+        .clickable(onClick = { expanded.value = !expanded.value })
+        .graphicsLayer { rotationZ = rotationAnimation.value } /////////////////////
+
     )
     {
-        Column(modifier = modifier.weight(1f)
-            //.padding(bottom = buttonPadding)
-            .padding((12.dp))
-        ){
+        Column(
+            modifier = modifier.weight(1f)
+                //.padding(bottom = buttonPadding)
+                .padding((12.dp)),
+
+            horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
             Text(
-                text = "Hello $name !",
-                modifier = modifier
-            )
-            Text(text = name,
+                text = name,
                 style = MaterialTheme.typography.headlineMedium, //modificacion del materialTheme
+
             )
-            if (expanded.value) {
-                Text(text = "texto composicion colores, " + "Con mas texto de tema")
+            //VALORES DE LOS TRES MEJORES RESULTADOS
+            if (expanded.value)
+            {
+                //Values de entretenimiento
+                if(name == "Entretenimiento"){
+                    //COGER MEJORES RESULTADOS DE QUERY
+                    //*************************************************//
+                    Text(text = "Result 1 ")
+                    Text(text = "Result 2 ")
+                    Text(text = "Result 3 ")
+                }
+                //Values de Cultura general
+                else if(name == "Cultura General")
+                {
+                    //COGER MEJORES RESULTADOS DE QUERY
+                    //*************************************************//
+                    Text(text = "Result 4 ")
+                    Text(text = "Result 5 ")
+                    Text(text = "Result 6 ")
+                }
+
             }
 
 
         }
-        /* ElevatedButton(onClick = { expanded.value = !expanded.value } )
-         {
-             Text(if(!expanded.value) "Soy Un Botón Inutil" else "Sigo sin hacer mucho")
-         }*/
+
+       /* ElevatedButton(onClick = { expanded.value = !expanded.value })
+        {
+            Text(if (!expanded.value) "Abrir Resultados" else "Cerrar Resultados")
+        }*/
         /*IconButton(onClick = {expanded.value = !expanded.value })
         {
             Icon(
@@ -190,6 +249,7 @@ private fun CardContent(name:String, modifier: Modifier)
 
             )
         }*/
+    }
     }
 }
 
