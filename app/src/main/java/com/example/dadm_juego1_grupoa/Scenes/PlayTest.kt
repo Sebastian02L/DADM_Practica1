@@ -28,9 +28,10 @@ fun BodyContentPlaying(navController: NavController) {
             try {
                 Log.d("BodyContentPlaying", "Cargando datos desde el archivo CSV...")
                 cargarDatosDesdeCSV(context, database)
-                val todasLasPreguntas = database.preguntaDao().obtenerTodasLasPreguntas()
-                listaPreguntas = todasLasPreguntas
-                Log.d("BodyContentPlaying", "Datos cargados con éxito, número de preguntas: ${todasLasPreguntas.size}")
+                val preguntasFaciles = database.preguntaDao().obtenerPreguntasPorDificultad("Entretenimiento", "Fácil", 6)
+                val preguntasMedias = database.preguntaDao().obtenerPreguntasPorDificultad("Entretenimiento", "Media", 4)
+                listaPreguntas = preguntasFaciles + preguntasMedias
+                Log.d("BodyContentPlaying", "Datos cargados con éxito, número de preguntas: ")
             } catch (e: Exception) {
                 Log.e("BodyContentPlaying", "Error al cargar preguntas: ${e.message}", e)
                 Toast.makeText(context, "Error al cargar las preguntas: ${e.message}", Toast.LENGTH_LONG).show()
