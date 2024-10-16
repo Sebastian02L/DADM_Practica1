@@ -34,6 +34,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -62,8 +63,8 @@ fun BodyContentGame(navController: NavController, playerName : String, category 
     var timePerQuestion : MutableList<Int> by remember { mutableStateOf(mutableListOf()) }
 
     val questionsAndAnwers = listOf(
-        "Pregunta 1" to listOf("Respuesta 1.1", "Respuesta 1.2", "Respuesta 1.3", "Respuesta correcta"),
-        "Pregunta 2" to listOf("Respuesta correcta", "Respuesta 2.2", "Respuesta 2.3", "Respuesta 2.4")
+        "¿Quién es el hombre más guapo?" to listOf("Mario Peláez", "Mario Trespiños", "Pedrete", "Dedu"),
+        "¿Qué tiene el rey en la panza?" to listOf("Pelo mayoritariamente", "No sé", "Migajas de pan", "Un AK47")
     )
 
     var currentQuestionIndex by rememberSaveable { mutableStateOf(0) }
@@ -127,20 +128,23 @@ fun BodyContentGame(navController: NavController, playerName : String, category 
 
         QACard(questionsAndAnwers[currentQuestionIndex].first, onClick = {}, modifier = Modifier.weight(1f), color = MaterialTheme.colorScheme.primary)
 
-        var answers = questionsAndAnwers[currentQuestionIndex].second
+        val correctAnswer = questionsAndAnwers[currentQuestionIndex].second[0]
+        val answers = remember(currentQuestionIndex) {
+            questionsAndAnwers[currentQuestionIndex].second.shuffled()
+        }
         answers.forEach{
             answer ->
             QACard(answer, isAnswer = true, onClick = {
                 if (areBottonsEnabled){
                     selectedAnswer = answer
-                    answerColor = if (answer == "Respuesta correcta") Color.Green else Color.Red
+                    answerColor = if (answer == correctAnswer) Color.Green else Color.Red
                     areBottonsEnabled = false
                     timePerQuestion.add(30 - time)
 
                     kotlinx.coroutines.GlobalScope.launch{
                         delay(2000L)
                         questionsCompleted++
-                        if (answer == "Respuesta correcta"){
+                        if (answer == correctAnswer){
                             points += 100
                         }
 
@@ -187,9 +191,13 @@ fun QACard(qa : String, modifier : Modifier = Modifier, isAnswer : Boolean = fal
     Card(colors = CardDefaults.cardColors(color), border = BorderStroke(5.dp, Color.Black), modifier = modifier.padding(vertical = 8.dp, horizontal = 4.dp)){
         Box(modifier = Modifier.fillMaxWidth(0.9f).fillMaxHeight().clickable(enabled = onClick != {}, onClick = onClick), contentAlignment = Alignment.Center) {
             Text(
-                "$qa",
-                modifier = Modifier.padding(vertical = 8.dp, horizontal = 8.dp),
-                style = TextStyle(fontSize = if (isAnswer) 20.sp else 40.sp)
+                text = "$qa",
+                style = TextStyle(
+                    fontSize = if (isAnswer) 20.sp else 28.sp,
+                    textAlign = TextAlign.Center
+                ),
+                maxLines = Int.MAX_VALUE,
+                modifier = Modifier.padding(16.dp)
             )
         }
     }
