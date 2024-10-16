@@ -40,8 +40,10 @@ import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -63,7 +65,14 @@ fun BodyContentScore(navController: NavController){
 
     //VARIABLES
     val context = LocalContext.current
+    var points : Int by rememberSaveable { mutableStateOf(50000) }
+    var correctAnswers : Int by rememberSaveable { mutableStateOf(13) }
+    var totalTime : Int by rememberSaveable { mutableStateOf(260) }
+    var averageTime : Int by rememberSaveable { mutableStateOf(10) }
 
+
+    val mediaPlayer = MediaPlayer.create(context, R.raw.sonidoboton1)
+    mediaPlayer.setVolume(5000.0f, 5000.0f)
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -110,7 +119,7 @@ fun BodyContentScore(navController: NavController){
                     )
                     .clip(RoundedCornerShape(16.dp)) // Aplica el recorte a las esquinas
             ) {
-                CardContent("Puntuación Total:", modifier = Modifier)
+                CardContent("Puntuación Total: " + points, modifier = Modifier)
             }
         }
 
@@ -134,7 +143,7 @@ fun BodyContentScore(navController: NavController){
                     )
                     .clip(RoundedCornerShape(16.dp)) // Aplica el recorte a las esquinas
             ) {
-                CardContent("Respuestas correctas:", modifier = Modifier)
+                CardContent("Respuestas correctas: " + correctAnswers +"/20", modifier = Modifier)
             }
         }
 
@@ -158,16 +167,18 @@ fun BodyContentScore(navController: NavController){
                     )
                     .clip(RoundedCornerShape(16.dp)) // Aplica el recorte a las esquinas
             ) {
-                CardContent("Tiempo total:\n\nTiempo medio:", modifier = Modifier)
+                CardContent("Tiempo total: " + totalTime + "\n \n" +"TiempoMedio: " +averageTime, modifier = Modifier)
+                //CardContent("Tiempo total: \n\n Tiempo medio:", modifier = Modifier)
             }
         }
 
         ElevatedButton(
             onClick = {
-                navController.navigate(Screen.MainMenu.route)
+                mediaPlayer.start()
+                navController.navigate(Screen.GameOptions.route)
 
             },
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(6.dp),
             shape = MaterialTheme.shapes.large,
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFFEFB8C8)
@@ -177,7 +188,7 @@ fun BodyContentScore(navController: NavController){
                 text = "Volver a jugar",
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold,
-//                fontFamily = montserratFontFamily,
+//              fontFamily = montserratFontFamily,
                 color = Color.White
             )
         }
@@ -187,7 +198,7 @@ fun BodyContentScore(navController: NavController){
                 navController.navigate(Screen.MainMenu.route)
 
             },
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(6.dp),
             shape = MaterialTheme.shapes.large,
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFFEFB8C8)
@@ -197,7 +208,7 @@ fun BodyContentScore(navController: NavController){
                 text = "Volver al menú",
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold,
-//                fontFamily = montserratFontFamily,
+//              fontFamily = montserratFontFamily,
                 color = Color.White
             )
         }

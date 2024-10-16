@@ -121,7 +121,7 @@ fun BodyContent(navController: NavController){
         }
 
         //BOTON PARA IR A RESULTADOS, NO ESTARA AQUI EN LA VER FINAL
-     /*   ElevatedButton(
+        ElevatedButton(
             onClick = {
                 navController.navigate(Screen.Score.route)
                 //FUNCION DE PASO ESCENAS CON navController (recordar usar el mediaPlayer?.start justo después)
@@ -141,7 +141,7 @@ fun BodyContent(navController: NavController){
                 color = Color.White
             )
         }
-      */
+
 
         ElevatedButton(
             onClick = {
