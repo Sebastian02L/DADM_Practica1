@@ -49,7 +49,7 @@ import androidx.compose.ui.text.font.createFontFamilyResolver
 var playerName = ""
 var selectedCategory = ""
 var selectedNumber = 0
-var difficultySelected = ""
+var selectedDifficulty = ""
 
 @Composable
 fun BodyContentGameOptions(navController: NavController){
@@ -116,7 +116,7 @@ fun BodyContentGameOptions(navController: NavController){
                 playerName = playerNameInput},
             label = {Text("Introduce tu nombre...", color = Color.Black)})
 
-        StartGameButton("¡Comenzar Partida!")
+        StartGameButton("¡Comenzar Partida!", navController)
     }
 }
 
@@ -183,7 +183,7 @@ fun CreateNumberButton(number : Int){
 @Composable
 fun CreateStringButton(text : String){
     ElevatedButton(modifier = Modifier.size(width = 110.dp, height = 60.dp).padding(horizontal = 5.dp),
-        onClick =  { difficultySelected = text },
+        onClick =  { selectedDifficulty = text },
         colors = ButtonDefaults.buttonColors(Color.White)) {
         Text(text = "${text}",
             style = TextStyle(
@@ -236,9 +236,9 @@ fun Dropdown() {
 }
 
 @Composable
-fun StartGameButton(text : String){
+fun StartGameButton(text : String, navController: NavController){
     ElevatedButton(modifier = Modifier.size(width = 250.dp, height = 50.dp).padding(horizontal = 5.dp),
-        onClick =  { },
+        onClick =  { navController.navigate(Screen.Game.route+"/${playerName}/${selectedCategory}/${selectedDifficulty}/${selectedNumber}")},
         colors = ButtonDefaults.buttonColors(Color.White)) {
         Text(text = "${text}",
             style = TextStyle(

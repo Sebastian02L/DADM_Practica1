@@ -37,24 +37,24 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.dadm_juego1_grupoa.ui.theme.DADM_juego1_GrupoATheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-@Preview
+/*@Preview
 @Composable
 fun Preview(){
     DADM_juego1_GrupoATheme {
         BodyContentGame()
     }
-}
+}*/
 
 @Composable
-fun BodyContentGame(/*navController: NavController*/){
+fun BodyContentGame(navController: NavController, playerName : String, category : String, difficulty : String, nQuestions : Int){
     val colors = listOf(Color(0xFF1F6D78), Color(0xFFFFFFFF)) // Colores del degradado
     val brush = Brush.sweepGradient(colors, Offset.Zero)
 
-    val numberOfQuestions: Int = 20
     var questionsCompleted : Int by rememberSaveable{ mutableStateOf(1) }
 
     var points : Int by rememberSaveable { mutableStateOf(0) }
@@ -97,7 +97,7 @@ fun BodyContentGame(/*navController: NavController*/){
             Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary), border = BorderStroke(5.dp, Color.Black), modifier = Modifier.padding(start = 5.dp)){
                 Box(modifier = Modifier.fillMaxWidth(0.4f).background(MaterialTheme.colorScheme.primary), contentAlignment = Alignment.Center) {
                     Text(
-                        "$questionsCompleted/$numberOfQuestions",
+                        "$questionsCompleted/$nQuestions",
                         style = TextStyle(fontSize = 40.sp),
                         modifier = Modifier.padding(vertical = 8.dp, horizontal = 8.dp)
                     )

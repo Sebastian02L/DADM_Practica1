@@ -5,4 +5,5 @@ sealed class Screen(val route: String){
     object GameOptions : Screen("GameOptions")
     object Ranking : Screen("Ranking")
     object Score : Screen("Score")
+    object Game : Screen("Game")
 }
