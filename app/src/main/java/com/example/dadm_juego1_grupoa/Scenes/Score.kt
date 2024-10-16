@@ -70,6 +70,9 @@ fun BodyContentScore(navController: NavController){
     var totalTime : Int by rememberSaveable { mutableStateOf(260) }
     var averageTime : Int by rememberSaveable { mutableStateOf(10) }
 
+
+    val mediaPlayer = MediaPlayer.create(context, R.raw.sonidoboton1)
+    mediaPlayer.setVolume(5000.0f, 5000.0f)
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -171,6 +174,7 @@ fun BodyContentScore(navController: NavController){
 
         ElevatedButton(
             onClick = {
+                mediaPlayer.start()
                 navController.navigate(Screen.GameOptions.route)
 
             },
@@ -184,7 +188,7 @@ fun BodyContentScore(navController: NavController){
                 text = "Volver a jugar",
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold,
-//                fontFamily = montserratFontFamily,
+//              fontFamily = montserratFontFamily,
                 color = Color.White
             )
         }
@@ -204,7 +208,7 @@ fun BodyContentScore(navController: NavController){
                 text = "Volver al menú",
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold,
-//                fontFamily = montserratFontFamily,
+//              fontFamily = montserratFontFamily,
                 color = Color.White
             )
         }
