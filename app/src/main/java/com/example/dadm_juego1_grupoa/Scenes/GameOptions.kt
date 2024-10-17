@@ -3,6 +3,7 @@ package com.example.dadm_juego1_grupoa.Scenes
 import android.graphics.Paint.Align
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -81,21 +82,29 @@ fun BodyContentGameOptions(navController: NavController){
             horizontalArrangement = Arrangement.Center){
             //Boton de salir
             ElevatedButton(
-
-                onClick ={ navController.navigate(Screen.MainMenu.route)},
+                onClick = { navController.navigate(Screen.MainMenu.route) },
                 shape = CircleShape,
                 colors = ButtonDefaults.buttonColors(Color.White),
-                modifier = Modifier.size(50.dp),
-
-            ){
-                Text(
-                    text = "<",
-                    fontFamily = FontFamily.Serif,
-                    fontSize = 32.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
-                )
-
+                modifier = Modifier
+                    .size(60.dp) //
+                    .border(
+                        width = 5.dp,
+                        color = MaterialTheme.colorScheme.secondary,
+                        shape = CircleShape
+                    )
+            ) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center 
+                ) {
+                    Text(
+                        text = "<",
+                        fontFamily = FontFamily.Default,
+                        fontSize = 28.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black
+                    )
+                }
             }
             //Padding con lo que tiene arriba 
             CreateMainTitleCard("AJUSTES DE LA PARTIDA", Modifier.padding(start = 25.dp))
