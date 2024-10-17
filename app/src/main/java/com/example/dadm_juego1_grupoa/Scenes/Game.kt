@@ -206,7 +206,7 @@ fun BodyContentGame(navController: NavController, playerName : String, category 
             QACard(
                 questionsAndAnswers.value[currentQuestionIndex].first,
                 onClick = {},
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.weight(1.5f),
                 color = MaterialTheme.colorScheme.primary
             )
 
@@ -229,7 +229,7 @@ fun BodyContentGame(navController: NavController, playerName : String, category 
                                 delay(2000L)
                                 questionsCompleted++
                                 if (answer == correctAnswer) {
-                                    points += 100
+                                    points += 100 - (30-time)
                                 }
 
                                 if (currentQuestionIndex < questionsAndAnswers.value.lastIndex) {
@@ -292,7 +292,7 @@ fun BodyContentGame(navController: NavController, playerName : String, category 
 
 @Composable
 fun QACard(qa : String, modifier : Modifier = Modifier, isAnswer : Boolean = false, onClick: () -> Unit, color: Color){
-    Card(colors = CardDefaults.cardColors(color), border = BorderStroke(5.dp, Color.Black), modifier = modifier.padding(vertical = 8.dp, horizontal = 4.dp)){
+    Card(colors = CardDefaults.cardColors(color), border = BorderStroke(5.dp, Color.Black), modifier = modifier.padding(vertical = 10.dp, horizontal = 4.dp)){
         Box(modifier = Modifier
             .fillMaxWidth(0.9f)
             .fillMaxHeight()
@@ -300,7 +300,7 @@ fun QACard(qa : String, modifier : Modifier = Modifier, isAnswer : Boolean = fal
             Text(
                 text = "$qa",
                 style = TextStyle(
-                    fontSize = if (isAnswer) 20.sp else 28.sp,
+                    fontSize = if (isAnswer) (20-"$qa".length * 0.1).sp else (28-"$qa".length * 0.1).sp,
                     textAlign = TextAlign.Center
                 ),
                 maxLines = Int.MAX_VALUE,
