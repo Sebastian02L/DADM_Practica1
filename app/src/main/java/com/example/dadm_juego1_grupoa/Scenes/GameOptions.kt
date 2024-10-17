@@ -73,7 +73,7 @@ fun BodyContentGameOptions(navController: NavController){
     //Columna que almacenará las tarjetas de la interfaz
     Column(modifier = Modifier.fillMaxSize()
         .background(brush)
-        .padding(top = 25.dp), //Distancia a la zona superior de la pantalla
+        .padding(top = 40.dp), //Distancia a la zona superior de la pantalla
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally){
 
@@ -111,16 +111,16 @@ fun BodyContentGameOptions(navController: NavController){
         }
 
         //Tarjeta de Seleccionar Categoria   //Padding con lo que tiene arriba y con lo que tiene debajo
-        CreateTitleCard("Categoría de las Preguntas", Modifier.padding(top = 25.dp, bottom = 10.dp))
+        CreateTitleCard("Categoría de las Preguntas", Modifier.padding(top = 20.dp, bottom = 10.dp))
 
         //Card desplegable para seleccionar la categoria
         Dropdown()
 
         //Tarjeta de Cantidad de Preguntas
-        CreateTitleCard("Cantidad de Preguntas", Modifier.padding(top = 25.dp, bottom = 10.dp))
+        CreateTitleCard("Cantidad de Preguntas", Modifier.padding( bottom = 10.dp))
 
         //Fila para seleccionar cantidad de preguntas
-        Row(modifier = Modifier.fillMaxWidth().padding(bottom = 25.dp),
+        Row(modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp),
             horizontalArrangement = Arrangement.Center){
             CreateNumberButton(10)
             CreateNumberButton(15)
@@ -128,10 +128,10 @@ fun BodyContentGameOptions(navController: NavController){
         }
 
         //Tarjeta de seleccion de dificultad
-        CreateTitleCard("Dificultad de las Preguntas", Modifier.padding(top = 25.dp, bottom = 10.dp))
+        CreateTitleCard("Dificultad de las Preguntas", Modifier.padding( bottom = 10.dp))
 
         //Fila para seleccionar difficultad de las preguntas
-        Row(modifier = Modifier.fillMaxWidth().padding(bottom = 25.dp),
+        Row(modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp),
             horizontalArrangement = Arrangement.Center){
             CreateStringButton("Fácil")
             CreateStringButton("Media")
@@ -139,9 +139,9 @@ fun BodyContentGameOptions(navController: NavController){
         }
 
         //Tarjeta de insertar nombre
-        CreateTitleCard("Nombre del Jugador", Modifier.padding(top = 25.dp, bottom = 10.dp))
+        CreateTitleCard("Nombre del Jugador", Modifier.padding( bottom = 10.dp))
         TextField(value = playerNameInput,
-            modifier = Modifier.padding(bottom = 15.dp),
+            modifier = Modifier.padding(bottom = 20.dp),
             onValueChange = { playerNameInput = it
                 playerName = playerNameInput},
             label = {Text( text = if(playerName == ""){ "Introduce tu nombre..." }
@@ -157,7 +157,7 @@ fun CreateMainTitleCard(title : String, modifier: Modifier = Modifier){
         containerColor = MaterialTheme.colorScheme.primary ),
         border = BorderStroke(5.dp, MaterialTheme.colorScheme.secondary),
         modifier = modifier.size(width = 250.dp, height = 50.dp),
-        shape = RoundedCornerShape(30.dp)
+        shape = MaterialTheme.shapes.medium
     ) {
         //Contenedor para poder alinear el text dentro de la tarjeta
         Box(
@@ -181,7 +181,7 @@ fun CreateTitleCard(title : String, modifier : Modifier = Modifier){
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
         border = BorderStroke(5.dp, MaterialTheme.colorScheme.secondary),
         modifier = modifier.size(width = 270.dp, height = 50.dp),
-        shape = RoundedCornerShape(30.dp)
+        shape = MaterialTheme.shapes.medium
     ) {
         //Contenedor para poder alinear el text dentro de la tarjeta
         Box(
@@ -236,7 +236,7 @@ fun Dropdown() {
     )}
 
     Column(
-        modifier = Modifier.fillMaxWidth().padding(bottom = 15.dp),
+        modifier = Modifier.fillMaxWidth().padding(bottom = 10.dp),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

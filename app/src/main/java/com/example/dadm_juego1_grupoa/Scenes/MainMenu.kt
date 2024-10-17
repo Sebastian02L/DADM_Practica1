@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
@@ -195,10 +196,12 @@ fun CustomElevatedButton(text: String, onClick: () -> Unit, function: () -> Unit
     ElevatedButton(
         onClick = onClick,
         modifier = Modifier.padding(16.dp),
-        shape = MaterialTheme.shapes.medium,
+        //shape = MaterialTheme.shapes.medium,
+        shape = RoundedCornerShape(30.dp),
         border = BorderStroke(5.dp, MaterialTheme.colorScheme.secondary),
         colors = ButtonDefaults.buttonColors(
         containerColor = MaterialTheme.colorScheme.primary
+
         )
     ) {
         Text(
