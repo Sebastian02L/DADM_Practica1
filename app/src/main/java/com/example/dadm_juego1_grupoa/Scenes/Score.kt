@@ -57,7 +57,7 @@ import com.example.dadm_juego1_grupoa.ui.theme.DADM_juego1_GrupoATheme
 
 
 @Composable
-fun BodyContentScore(navController: NavController){
+fun BodyContentScore(navController: NavController, playerName : String, nQuestions : Int, correctAnswers : Int, points : Int, timePerQuestion : List<Int>){
 
     //ESTILOS
     val colors = listOf(Color(0xFF1F6D78), Color(0xFFFFFFFF)) // Colores del degradado
@@ -65,11 +65,16 @@ fun BodyContentScore(navController: NavController){
 
     //VARIABLES
     val context = LocalContext.current
-    var points : Int by rememberSaveable { mutableStateOf(50000) }
-    var correctAnswers : Int by rememberSaveable { mutableStateOf(13) }
-    var totalTime : Int by rememberSaveable { mutableStateOf(260) }
-    var averageTime : Int by rememberSaveable { mutableStateOf(10) }
+    var totalTime : Int by rememberSaveable { mutableStateOf(0) }
+    var averageTime : Int by rememberSaveable { mutableStateOf(0) }
 
+    var sumTime = 0
+    for (time in timePerQuestion){
+        sumTime += time
+    }
+
+    totalTime = sumTime
+    averageTime = sumTime / timePerQuestion.size
 
     val mediaPlayer = MediaPlayer.create(context, R.raw.sonidoboton1)
     mediaPlayer.setVolume(5000.0f, 5000.0f)
@@ -143,7 +148,7 @@ fun BodyContentScore(navController: NavController){
                     )
                     .clip(RoundedCornerShape(16.dp)) // Aplica el recorte a las esquinas
             ) {
-                CardContent("Respuestas correctas: " + correctAnswers +"/20", modifier = Modifier)
+                CardContent("Respuestas correctas: " + correctAnswers +"/$nQuestions", modifier = Modifier)
             }
         }
 

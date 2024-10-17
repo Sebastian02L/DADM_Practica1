@@ -27,6 +27,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -69,6 +70,7 @@ fun BodyContentGame(navController: NavController, playerName : String, category 
     val context = LocalContext.current
     val database = AppDatabase.getDatabase(context)
     var questionsCompleted: Int by rememberSaveable { mutableStateOf(1) }
+    var correctAnswers: Int by rememberSaveable { mutableStateOf(0) }
 
     var points: Int by rememberSaveable { mutableStateOf(0) }
     var time: Int by rememberSaveable { mutableStateOf(30) }
@@ -81,6 +83,7 @@ fun BodyContentGame(navController: NavController, playerName : String, category 
     var answerColor by remember { mutableStateOf(Color.White) }
     var areButtonsEnabled by rememberSaveable { mutableStateOf(true) }
 
+    val coroutineScope = rememberCoroutineScope()
 
     // Lanzamos la consulta a la base de datos en un hilo secundario utilizando coroutines
     LaunchedEffect(difficulty) {
@@ -132,7 +135,7 @@ fun BodyContentGame(navController: NavController, playerName : String, category 
             if (currentQuestionIndex < questionsAndAnswers.value.lastIndex) {
                 currentQuestionIndex++
             } else {
-                currentQuestionIndex = 0
+                navController.navigate(Screen.Score.route+"/${playerName}/${nQuestions}/${correctAnswers}/${points}/${timePerQuestion.joinToString(",")}")
             }
             selectedAnswer = null
             answerColor = Color.White
@@ -225,17 +228,18 @@ fun BodyContentGame(navController: NavController, playerName : String, category 
                             areButtonsEnabled = false
                             timePerQuestion.add(30 - time)
 
-                            kotlinx.coroutines.GlobalScope.launch {
+                            coroutineScope.launch {
                                 delay(2000L)
                                 questionsCompleted++
                                 if (answer == correctAnswer) {
                                     points += 100 - (30-time)
+                                    correctAnswers++
                                 }
 
                                 if (currentQuestionIndex < questionsAndAnswers.value.lastIndex) {
                                     currentQuestionIndex++
                                 } else {
-                                    currentQuestionIndex = 0
+                                    navController.navigate(Screen.Score.route+"/${playerName}/${nQuestions}/${correctAnswers}/${points}/${timePerQuestion.joinToString(",")}")
                                 }
                                 selectedAnswer = null
                                 answerColor = Color.White

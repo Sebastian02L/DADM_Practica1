@@ -25,8 +25,21 @@ fun Navigation(){
         }
 
         //Cuando se cree la pantalla de juego se tiene que cabiar el start destination.
-        composable(route = Screen.Score.route){
-            BodyContentScore(navController)
+        composable(route = Screen.Score.route+"/{playerName}/{nQuestions}/{correctAnswers}/{points}/{timePerQuestion}",
+            arguments = listOf(
+                navArgument("playerName"){type = NavType.StringType},
+                navArgument("nQuestions"){type = NavType.IntType},
+                navArgument("correctAnswers"){type = NavType.IntType},
+                navArgument("points"){type = NavType.IntType},
+                navArgument("timePerQuestion"){type = NavType.StringType}
+            )
+        ){ backStackEntry ->
+            val playerName = backStackEntry.arguments?.getString("playerName")?:""
+            val nQuestions = backStackEntry.arguments?.getInt("nQuestions")?:0
+            val correctAnswers = backStackEntry.arguments?.getInt("correctAnswers")?:0
+            val points = backStackEntry.arguments?.getInt("points")?:0
+            val timePerQuestion : List<Int> = backStackEntry.arguments?.getString("timePerQuestion")?.split(",")?.map{it.toInt()}?: emptyList()
+            BodyContentScore(navController, playerName, nQuestions, correctAnswers, points, timePerQuestion)
         }
 
         //
