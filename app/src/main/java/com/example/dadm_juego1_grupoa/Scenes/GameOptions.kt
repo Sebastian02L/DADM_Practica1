@@ -18,6 +18,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -25,6 +27,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
@@ -78,23 +81,34 @@ fun BodyContentGameOptions(navController: NavController){
             horizontalArrangement = Arrangement.Center){
             //Boton de salir
             ElevatedButton(
+
                 onClick ={ navController.navigate(Screen.MainMenu.route)},
                 shape = CircleShape,
                 colors = ButtonDefaults.buttonColors(Color.White),
-                modifier = Modifier.size(50.dp)
-            ){}
+                modifier = Modifier.size(50.dp),
+
+            ){
+                Text(
+                    text = "<",
+                    fontFamily = FontFamily.Serif,
+                    fontSize = 32.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black
+                )
+
+            }
             //Padding con lo que tiene arriba 
             CreateMainTitleCard("AJUSTES DE LA PARTIDA", Modifier.padding(start = 25.dp))
         }
 
         //Tarjeta de Seleccionar Categoria   //Padding con lo que tiene arriba y con lo que tiene debajo
-        CreateTitleCard("Categoría de las Preguntas", Modifier.padding(top = 35.dp, bottom = 10.dp))
+        CreateTitleCard("Categoría de las Preguntas", Modifier.padding(top = 25.dp, bottom = 10.dp))
 
         //Card desplegable para seleccionar la categoria
         Dropdown()
 
         //Tarjeta de Cantidad de Preguntas
-        CreateTitleCard("Cantidad de Preguntas", Modifier.padding(top = 35.dp, bottom = 10.dp))
+        CreateTitleCard("Cantidad de Preguntas", Modifier.padding(top = 25.dp, bottom = 10.dp))
 
         //Fila para seleccionar cantidad de preguntas
         Row(modifier = Modifier.fillMaxWidth().padding(bottom = 25.dp),
@@ -105,7 +119,7 @@ fun BodyContentGameOptions(navController: NavController){
         }
 
         //Tarjeta de seleccion de dificultad
-        CreateTitleCard("Dificultad de las Preguntas", Modifier.padding(top = 35.dp, bottom = 10.dp))
+        CreateTitleCard("Dificultad de las Preguntas", Modifier.padding(top = 25.dp, bottom = 10.dp))
 
         //Fila para seleccionar difficultad de las preguntas
         Row(modifier = Modifier.fillMaxWidth().padding(bottom = 25.dp),
@@ -116,7 +130,7 @@ fun BodyContentGameOptions(navController: NavController){
         }
 
         //Tarjeta de insertar nombre
-        CreateTitleCard("Nombre del Jugador", Modifier.padding(top = 35.dp, bottom = 10.dp))
+        CreateTitleCard("Nombre del Jugador", Modifier.padding(top = 25.dp, bottom = 10.dp))
         TextField(value = playerNameInput,
             modifier = Modifier.padding(bottom = 15.dp),
             onValueChange = { playerNameInput = it

@@ -142,6 +142,7 @@ fun BodyContentRanking(navController: NavController,
             }
         }
     }
+
 }
 
 @Composable
