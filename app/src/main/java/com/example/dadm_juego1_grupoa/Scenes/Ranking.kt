@@ -130,11 +130,10 @@ fun BodyContentRanking(navController: NavController,
 
         //TARJETAS PARA LOS RESULTADOS (2 tarjetas deplegables con 3 puestos)
         Card(colors = CardDefaults.cardColors(
-            containerColor =  Color.Transparent
+            containerColor =  Color.Transparent,
         ),
             modifier = Modifier.padding(vertical=0.dp, horizontal = 0.dp
             )
-
         ){
             for(cat in categorias){
                 CardContent( name = cat, modifier=Modifier)
@@ -144,7 +143,6 @@ fun BodyContentRanking(navController: NavController,
         }
     }
 }
-
 
 @Composable
 private fun CardContent(name:String, modifier: Modifier)

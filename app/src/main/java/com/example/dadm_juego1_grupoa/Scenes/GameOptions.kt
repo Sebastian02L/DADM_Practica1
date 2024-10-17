@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -44,6 +45,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.compose.runtime.*
 import androidx.compose.ui.input.pointer.motionEventSpy
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.createFontFamilyResolver
 
 //Variables globales donde se almacena la ultima configuracion utilizada
@@ -56,8 +58,11 @@ var selectedDifficulty by mutableStateOf("Fácil")
 @Composable
 fun BodyContentGameOptions(navController: NavController){
 
-    val colors = listOf(Color(0xFF1F6D78), Color(0xFFFFFFFF)) // Colores del degradado
-    val brush = Brush.sweepGradient(colors, Offset.Zero)
+    val colors = listOf(
+        MaterialTheme.colorScheme.background, // Azul claro
+        MaterialTheme.colorScheme.surface // Color rosado claro
+    ) // Colores del degradado
+    val brush = Brush.linearGradient(colors)
     //Variable que actualiza lo que escribe el jugador en el inputfield
     var playerNameInput by remember { mutableStateOf("") }
 
@@ -79,7 +84,7 @@ fun BodyContentGameOptions(navController: NavController){
                 modifier = Modifier.size(50.dp)
             ){}
             //Padding con lo que tiene arriba 
-            CreateMainTitleCard("Ajustes de la Partida", Modifier.padding(start = 25.dp))
+            CreateMainTitleCard("AJUSTES DE LA PARTIDA", Modifier.padding(start = 25.dp))
         }
 
         //Tarjeta de Seleccionar Categoria   //Padding con lo que tiene arriba y con lo que tiene debajo
@@ -126,8 +131,8 @@ fun BodyContentGameOptions(navController: NavController){
 @Composable
 fun CreateMainTitleCard(title : String, modifier: Modifier = Modifier){
     OutlinedCard(colors = CardDefaults.cardColors(
-        containerColor = MaterialTheme.colorScheme.surface ),
-        border = BorderStroke(5.dp, Color.Black),
+        containerColor = MaterialTheme.colorScheme.primary ),
+        border = BorderStroke(5.dp, MaterialTheme.colorScheme.secondary),
         modifier = modifier.size(width = 250.dp, height = 50.dp),
         shape = RoundedCornerShape(30.dp)
     ) {
@@ -150,8 +155,8 @@ fun CreateMainTitleCard(title : String, modifier: Modifier = Modifier){
 @Composable
 fun CreateTitleCard(title : String, modifier : Modifier = Modifier){
     OutlinedCard(
-        colors = CardDefaults.cardColors(Color.White,),
-        border = BorderStroke(5.dp, Color.Black),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
+        border = BorderStroke(5.dp, MaterialTheme.colorScheme.secondary),
         modifier = modifier.size(width = 270.dp, height = 50.dp),
         shape = RoundedCornerShape(30.dp)
     ) {
@@ -257,6 +262,8 @@ fun StartGameButton(text : String, navController: NavController){
                 fontWeight = FontWeight.Bold, color = Color.Black))
     }
 }
+
+
 
 /*@Preview
 @Composable
