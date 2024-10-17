@@ -50,8 +50,8 @@ import androidx.compose.ui.text.font.createFontFamilyResolver
 //Estas variables se pasan a la siguiente escena para realizar las consultas a la BD
 var playerName by mutableStateOf("")
 var selectedCategory by mutableStateOf("")
-var selectedNumber by mutableStateOf(0)
-var selectedDifficulty by mutableStateOf("")
+var selectedNumber by mutableStateOf(15)
+var selectedDifficulty by mutableStateOf("Fácil")
 
 @Composable
 fun BodyContentGameOptions(navController: NavController){
