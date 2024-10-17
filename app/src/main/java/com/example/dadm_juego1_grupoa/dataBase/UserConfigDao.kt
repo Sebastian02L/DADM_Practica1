@@ -9,6 +9,9 @@ interface UserConfigDao {
     @Insert
     fun insertarUserConfig(userConfig: List<UserConfig>)
 
-    @Query("SELECT * FROM ranking")
+    @Query("SELECT * FROM userConfig")
     fun obtenerUserConfig(): List<UserConfig>
+
+    @Query("UPDATE userConfig SET nombre = :nombre, categoria = :categoria, numPreguntas = :numPreguntas, dificultad = :dificultad WHERE id = 0")
+    fun actualizarPregunta(id: Int, nombre: String, categoria: String, numPreguntas: Int, dificultad: String)
 }

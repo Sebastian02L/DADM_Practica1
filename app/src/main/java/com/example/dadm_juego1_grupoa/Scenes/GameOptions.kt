@@ -235,7 +235,11 @@ fun Dropdown() {
                     text = { Text(text = option) }, // Cambiar el uso aquí
                     onClick = {
                         selectedOption = option // Actualiza la opción seleccionada
-                        selectedCategory = selectedOption
+                        if(option == "Cultura General"){
+                            selectedCategory = "CulturaGeneral"
+                        }else {
+                            selectedCategory = selectedOption
+                        }
                         expanded = false // Cierra el menú después de seleccionar
                     }
                 )

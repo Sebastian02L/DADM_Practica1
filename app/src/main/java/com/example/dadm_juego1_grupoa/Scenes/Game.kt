@@ -1,5 +1,6 @@
 package com.example.dadm_juego1_grupoa.Scenes
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -33,15 +34,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.dadm_juego1_grupoa.dataBase.AppDatabase
+import com.example.dadm_juego1_grupoa.dataBase.Pregunta
 import com.example.dadm_juego1_grupoa.ui.theme.DADM_juego1_GrupoATheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /*@Preview
 @Composable
@@ -53,135 +61,231 @@ fun Preview(){
 
 @Composable
 fun BodyContentGame(navController: NavController, playerName : String, category : String, difficulty : String, nQuestions : Int){
+
+
+
     val colors = listOf(Color(0xFF1F6D78), Color(0xFFFFFFFF)) // Colores del degradado
     val brush = Brush.sweepGradient(colors, Offset.Zero)
+    val context = LocalContext.current
+    val database = AppDatabase.getDatabase(context)
+    var questionsCompleted: Int by rememberSaveable { mutableStateOf(1) }
 
-    var questionsCompleted : Int by rememberSaveable{ mutableStateOf(1) }
+    var points: Int by rememberSaveable { mutableStateOf(0) }
+    var time: Int by rememberSaveable { mutableStateOf(30) }
+    var timePerQuestion: MutableList<Int> by remember { mutableStateOf(mutableListOf()) }
 
-    var points : Int by rememberSaveable { mutableStateOf(0) }
-    var time : Int by rememberSaveable { mutableStateOf(30) }
-    var timePerQuestion : MutableList<Int> by remember { mutableStateOf(mutableListOf()) }
-
-    val questionsAndAnwers = listOf(
-        "¿Quién es el hombre más guapo?" to listOf("Mario Peláez", "Mario Trespiños", "Pedrete", "Dedu"),
-        "¿Qué tiene el rey en la panza?" to listOf("Pelo mayoritariamente", "No sé", "Migajas de pan", "Un AK47")
-    )
-
+    // Variables para almacenar las preguntas y respuestas
+    var questionsAndAnswers = remember { mutableStateOf(listOf<Pair<String, List<String>>>()) }
     var currentQuestionIndex by rememberSaveable { mutableStateOf(0) }
     var selectedAnswer by rememberSaveable { mutableStateOf<String?>(null) }
-
     var answerColor by remember { mutableStateOf(Color.White) }
-    var areBottonsEnabled by rememberSaveable { mutableStateOf(true) }
+    var areButtonsEnabled by rememberSaveable { mutableStateOf(true) }
 
-    LaunchedEffect(currentQuestionIndex){
-        while(time > 0){
-            delay(1000L)
-            if (selectedAnswer == null) {
-                time--
+
+    // Lanzamos la consulta a la base de datos en un hilo secundario utilizando coroutines
+    LaunchedEffect(difficulty) {
+        CoroutineScope(Dispatchers.IO).launch {
+            var questionsDataBase: List<Pregunta> = when (difficulty) {
+                "Fácil" -> database.preguntaDao()
+                    .obtenerPreguntasPorDificultad(category, "Fácil", nQuestions)
+
+                "Media" -> database.preguntaDao()
+                    .obtenerPreguntasPorDificultad(category, "Media", (nQuestions * 0.6).toInt()) +
+                        database.preguntaDao().obtenerPreguntasPorDificultad(
+                            category,
+                            "Fácil",
+                            (nQuestions * 0.4).toInt()
+                        )
+
+                else -> database.preguntaDao().obtenerPreguntasPorDificultad(
+                    category,
+                    "Difícil",
+                    (nQuestions * 0.6).toInt()
+                ) +
+                        database.preguntaDao().obtenerPreguntasPorDificultad(
+                            category,
+                            "Media",
+                            (nQuestions * 0.4).toInt()
+                        )
+            }
+
+            val qaList = questionsDataBase.map { question ->
+                question.pregunta to listOf(question.respuestaC, question.respuestaI1, question.respuestaI2, question.respuestaI3)
+            }
+
+            // Actualizamos el estado en el hilo principal
+            withContext(Dispatchers.Main) {
+                questionsAndAnswers.value = qaList
             }
         }
-        questionsCompleted++
-        if(currentQuestionIndex < questionsAndAnwers.lastIndex){
-            currentQuestionIndex++
-        }else{
-            currentQuestionIndex = 0
-        }
-        selectedAnswer = null
-        answerColor = Color.White
-        areBottonsEnabled = true
-        timePerQuestion.add(30)
-        time = 30
     }
 
-    Column(modifier = Modifier.fillMaxSize().background(brush), horizontalAlignment = Alignment.CenterHorizontally){
-        Row(modifier = Modifier.fillMaxWidth().padding(top = 60.dp, bottom = 40.dp), horizontalArrangement = Arrangement.SpaceBetween){
-            Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary), border = BorderStroke(5.dp, Color.Black), modifier = Modifier.padding(start = 5.dp)){
-                Box(modifier = Modifier.fillMaxWidth(0.4f).background(MaterialTheme.colorScheme.primary), contentAlignment = Alignment.Center) {
-                    Text(
-                        "$questionsCompleted/$nQuestions",
-                        style = TextStyle(fontSize = 40.sp),
-                        modifier = Modifier.padding(vertical = 8.dp, horizontal = 8.dp)
-                    )
+    if (questionsAndAnswers.value.isNotEmpty()) {
+        LaunchedEffect(currentQuestionIndex) {
+            while (time > 0) {
+                delay(1000L)
+                if (selectedAnswer == null) {
+                    time--
                 }
             }
-            Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary), border = BorderStroke(5.dp, Color.Black), modifier = Modifier.padding(end = 5.dp)){
-                Box(modifier = Modifier.fillMaxWidth(0.7f).background(MaterialTheme.colorScheme.primary)) {
-                    Row(
-                        modifier = Modifier.align(Alignment.CenterEnd),
-                        verticalAlignment = Alignment.CenterVertically
+            questionsCompleted++
+            if (currentQuestionIndex < questionsAndAnswers.value.lastIndex) {
+                currentQuestionIndex++
+            } else {
+                currentQuestionIndex = 0
+            }
+            selectedAnswer = null
+            answerColor = Color.White
+            areButtonsEnabled = true
+            timePerQuestion.add(30)
+            time = 30
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(brush),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 60.dp, bottom = 40.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Card(
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
+                    border = BorderStroke(5.dp, Color.Black),
+                    modifier = Modifier.padding(start = 5.dp)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth(0.4f)
+                            .background(MaterialTheme.colorScheme.primary),
+                        contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            "$points",
+                            "$questionsCompleted/$nQuestions",
                             style = TextStyle(fontSize = 40.sp),
                             modifier = Modifier.padding(vertical = 8.dp, horizontal = 8.dp)
                         )
+                    }
+                }
+                Card(
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
+                    border = BorderStroke(5.dp, Color.Black),
+                    modifier = Modifier.padding(end = 5.dp)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth(0.7f)
+                            .background(MaterialTheme.colorScheme.primary)
+                    ) {
+                        Row(
+                            modifier = Modifier.align(Alignment.CenterEnd),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                "$points",
+                                style = TextStyle(fontSize = 40.sp),
+                                modifier = Modifier.padding(vertical = 8.dp, horizontal = 8.dp)
+                            )
+                            Icon(
+                                imageVector = Icons.Filled.Star,
+                                contentDescription = "Star Icon",
+                                tint = Color.Yellow,
+                                modifier = Modifier
+                                    .padding(end = 8.dp)
+                                    .size(40.dp)
+                            )
+                        }
+                    }
+                }
+            }
+
+            QACard(
+                questionsAndAnswers.value[currentQuestionIndex].first,
+                onClick = {},
+                modifier = Modifier.weight(1f),
+                color = MaterialTheme.colorScheme.primary
+            )
+
+            val correctAnswer = questionsAndAnswers.value[currentQuestionIndex].second[0]
+            val answers = remember(currentQuestionIndex) {
+                questionsAndAnswers.value[currentQuestionIndex].second.shuffled()
+            }
+            answers.forEach { answer ->
+                QACard(
+                    answer,
+                    isAnswer = true,
+                    onClick = {
+                        if (areButtonsEnabled) {
+                            selectedAnswer = answer
+                            answerColor = if (answer == correctAnswer) Color.Green else Color.Red
+                            areButtonsEnabled = false
+                            timePerQuestion.add(30 - time)
+
+                            kotlinx.coroutines.GlobalScope.launch {
+                                delay(2000L)
+                                questionsCompleted++
+                                if (answer == correctAnswer) {
+                                    points += 100
+                                }
+
+                                if (currentQuestionIndex < questionsAndAnswers.value.lastIndex) {
+                                    currentQuestionIndex++
+                                } else {
+                                    currentQuestionIndex = 0
+                                }
+                                selectedAnswer = null
+                                answerColor = Color.White
+                                areButtonsEnabled = true
+                                time = 30
+                            }
+                        }
+                    },
+                    modifier = Modifier.weight(1f),
+                    color = if (selectedAnswer == answer) answerColor else Color.White
+                )
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            Card(
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
+                border = BorderStroke(5.dp, Color.Black),
+                modifier = Modifier
+                    .padding(bottom = 5.dp)
+                    .align(Alignment.CenterHorizontally)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.5f)
+                        .background(MaterialTheme.colorScheme.primary),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
-                            imageVector = Icons.Filled.Star,
-                            contentDescription = "Star Icon",
-                            tint = Color.Yellow,
-                            modifier = Modifier.padding(end = 8.dp).size(40.dp)
+                            imageVector = Icons.Filled.AccessTime,
+                            contentDescription = "Clock Icon",
+                            tint = Color.White,
+                            modifier = Modifier
+                                .size(50.dp)
+                                .padding(8.dp)
+                        )
+                        Text(
+                            "$time",
+                            modifier = Modifier.padding(vertical = 8.dp, horizontal = 8.dp),
+                            style = TextStyle(fontSize = 40.sp)
                         )
                     }
                 }
             }
         }
-
-        QACard(questionsAndAnwers[currentQuestionIndex].first, onClick = {}, modifier = Modifier.weight(1f), color = MaterialTheme.colorScheme.primary)
-
-        val correctAnswer = questionsAndAnwers[currentQuestionIndex].second[0]
-        val answers = remember(currentQuestionIndex) {
-            questionsAndAnwers[currentQuestionIndex].second.shuffled()
-        }
-        answers.forEach{
-            answer ->
-            QACard(answer, isAnswer = true, onClick = {
-                if (areBottonsEnabled){
-                    selectedAnswer = answer
-                    answerColor = if (answer == correctAnswer) Color.Green else Color.Red
-                    areBottonsEnabled = false
-                    timePerQuestion.add(30 - time)
-
-                    kotlinx.coroutines.GlobalScope.launch{
-                        delay(2000L)
-                        questionsCompleted++
-                        if (answer == correctAnswer){
-                            points += 100
-                        }
-
-                        if (currentQuestionIndex < questionsAndAnwers.lastIndex){
-                            currentQuestionIndex++
-                        }else{
-                            currentQuestionIndex = 0
-                        }
-                        selectedAnswer = null
-                        answerColor = Color.White
-                        areBottonsEnabled = true
-                        time = 30
-                    }
-                }
-            }, modifier = Modifier.weight(1f), color = if (selectedAnswer == answer) answerColor else Color.White)
-        }
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary), border = BorderStroke(5.dp, Color.Black), modifier = Modifier.padding(bottom = 5.dp).align(Alignment.CenterHorizontally)){
-            Box(modifier = Modifier.fillMaxWidth(0.5f).background(MaterialTheme.colorScheme.primary), contentAlignment = Alignment.Center) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        imageVector = Icons.Filled.AccessTime,
-                        contentDescription = "Clock Icon",
-                        tint = Color.White,
-                        modifier = Modifier
-                            .size(50.dp)
-                            .padding(8.dp)
-                    )
-                    Text(
-                        "$time",
-                        modifier = Modifier.padding(vertical = 8.dp, horizontal = 8.dp),
-                        style = TextStyle(fontSize = 40.sp)
-                    )
-                }
-            }
+    }
+    else {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Text(text = "Cargando preguntas...", style = TextStyle(fontSize = 24.sp))
         }
     }
 }
@@ -189,7 +293,10 @@ fun BodyContentGame(navController: NavController, playerName : String, category 
 @Composable
 fun QACard(qa : String, modifier : Modifier = Modifier, isAnswer : Boolean = false, onClick: () -> Unit, color: Color){
     Card(colors = CardDefaults.cardColors(color), border = BorderStroke(5.dp, Color.Black), modifier = modifier.padding(vertical = 8.dp, horizontal = 4.dp)){
-        Box(modifier = Modifier.fillMaxWidth(0.9f).fillMaxHeight().clickable(enabled = onClick != {}, onClick = onClick), contentAlignment = Alignment.Center) {
+        Box(modifier = Modifier
+            .fillMaxWidth(0.9f)
+            .fillMaxHeight()
+            .clickable(enabled = onClick != {}, onClick = onClick), contentAlignment = Alignment.Center) {
             Text(
                 text = "$qa",
                 style = TextStyle(
