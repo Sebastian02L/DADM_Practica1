@@ -46,10 +46,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.input.pointer.motionEventSpy
 import androidx.compose.ui.text.font.createFontFamilyResolver
 
-var playerName = ""
-var selectedCategory = ""
-var selectedNumber = 0
-var selectedDifficulty = ""
+//Variables globales donde se almacena la ultima configuracion utilizada
+//Estas variables se pasan a la siguiente escena para realizar las consultas a la BD
+var playerName by mutableStateOf("")
+var selectedCategory by mutableStateOf("")
+var selectedNumber by mutableStateOf(0)
+var selectedDifficulty by mutableStateOf("")
 
 @Composable
 fun BodyContentGameOptions(navController: NavController){
@@ -114,7 +116,8 @@ fun BodyContentGameOptions(navController: NavController){
             modifier = Modifier.padding(bottom = 15.dp),
             onValueChange = { playerNameInput = it
                 playerName = playerNameInput},
-            label = {Text("Introduce tu nombre...", color = Color.Black)})
+            label = {Text( text = if(playerName == ""){ "Introduce tu nombre..." }
+                                else { playerName}, color = Color.Black) })
 
         StartGameButton("¡Comenzar Partida!", navController)
     }
@@ -172,7 +175,9 @@ fun CreateTitleCard(title : String, modifier : Modifier = Modifier){
 fun CreateNumberButton(number : Int){
     ElevatedButton(modifier = Modifier.size(width = 80.dp, height = 50.dp).padding(horizontal = 5.dp),
         onClick =  { selectedNumber = number },
-        colors = ButtonDefaults.buttonColors(Color.White)) {
+        colors = if(selectedNumber != number) { ButtonDefaults.buttonColors(Color.White) }
+                else{ ButtonDefaults.buttonColors(Color.LightGray) }) {
+
         Text(text = "${number}",
             style = TextStyle(
                 fontSize = 18.sp,
@@ -184,7 +189,8 @@ fun CreateNumberButton(number : Int){
 fun CreateStringButton(text : String){
     ElevatedButton(modifier = Modifier.size(width = 110.dp, height = 60.dp).padding(horizontal = 5.dp),
         onClick =  { selectedDifficulty = text },
-        colors = ButtonDefaults.buttonColors(Color.White)) {
+        colors = if(selectedDifficulty != text){ ButtonDefaults.buttonColors(Color.White) }
+                else{ButtonDefaults.buttonColors(Color.LightGray)}) {
         Text(text = "${text}",
             style = TextStyle(
                 fontSize = 18.sp,
@@ -196,7 +202,10 @@ fun CreateStringButton(text : String){
 fun Dropdown() {
     // Estado para el menú desplegable
     var expanded by remember { mutableStateOf(false) }
-    var selectedOption by remember { mutableStateOf("Pulsa para seleccionar") }
+    var selectedOption by remember { mutableStateOf(
+        if(selectedCategory == ""){"Pulsa para seleccionar una categoria"}
+        else{ selectedCategory }
+    )}
 
     Column(
         modifier = Modifier.fillMaxWidth().padding(bottom = 15.dp),
@@ -238,7 +247,9 @@ fun Dropdown() {
 @Composable
 fun StartGameButton(text : String, navController: NavController){
     ElevatedButton(modifier = Modifier.size(width = 250.dp, height = 50.dp).padding(horizontal = 5.dp),
-        onClick =  { navController.navigate(Screen.Game.route+"/${playerName}/${selectedCategory}/${selectedDifficulty}/${selectedNumber}")},
+        onClick =  {
+            if(selectedCategory != "" && selectedDifficulty != "" && selectedNumber != 0 && playerName != ""){
+                navController.navigate(Screen.Game.route+"/${playerName}/${selectedCategory}/${selectedDifficulty}/${selectedNumber}")}},
         colors = ButtonDefaults.buttonColors(Color.White)) {
         Text(text = "${text}",
             style = TextStyle(
