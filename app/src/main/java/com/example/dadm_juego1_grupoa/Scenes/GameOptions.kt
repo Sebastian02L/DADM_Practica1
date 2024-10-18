@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
@@ -99,12 +100,15 @@ fun BodyContentGameOptions(navController: NavController){
                 shape = CircleShape,
                 colors = ButtonDefaults.buttonColors(Color.White),
                 modifier = Modifier
+                    .padding(start = 10.dp)
                     .size(60.dp) //
                     .border(
                         width = 5.dp,
                         color = MaterialTheme.colorScheme.secondary,
                         shape = CircleShape
                     )
+                    .weight(1f)
+
             ) {
                 Box(
                     modifier = Modifier.fillMaxSize(),
@@ -120,17 +124,17 @@ fun BodyContentGameOptions(navController: NavController){
                 }
             }
             //Padding con lo que tiene arriba 
-            CreateMainTitleCard("AJUSTES DE LA PARTIDA", Modifier.padding(start = 25.dp))
+            CreateMainTitleCard("AJUSTES DE LA PARTIDA", Modifier.padding(start = 25.dp, end= 10.dp).weight(6f))
         }
 
         //Tarjeta de Seleccionar Categoria   //Padding con lo que tiene arriba y con lo que tiene debajo
-        CreateTitleCard("Categoría de las Preguntas", Modifier.padding(top = 20.dp, bottom = 10.dp))
+        CreateTitleCard("Categoría de las Preguntas", Modifier.padding(top = 10.dp, bottom = 10.dp).weight(1f))
 
         //Card desplegable para seleccionar la categoria
         Dropdown()
 
         //Tarjeta de Cantidad de Preguntas
-        CreateTitleCard("Cantidad de Preguntas", Modifier.padding( bottom = 10.dp))
+        CreateTitleCard("Cantidad de Preguntas", Modifier.padding( bottom = 10.dp).weight(1f))
 
         //Fila para seleccionar cantidad de preguntas
         Row(modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp),
@@ -141,7 +145,7 @@ fun BodyContentGameOptions(navController: NavController){
         }
 
         //Tarjeta de seleccion de dificultad
-        CreateTitleCard("Dificultad de las Preguntas", Modifier.padding( bottom = 10.dp))
+        CreateTitleCard("Dificultad de las Preguntas", Modifier.padding( bottom = 10.dp).weight(1f))
 
         //Fila para seleccionar difficultad de las preguntas
         Row(modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp),
@@ -152,7 +156,7 @@ fun BodyContentGameOptions(navController: NavController){
         }
 
         //Tarjeta de insertar nombre
-        CreateTitleCard("Nombre del Jugador", Modifier.padding( bottom = 10.dp))
+        CreateTitleCard("Nombre del Jugador", Modifier.padding( bottom = 10.dp).weight(1f))
         TextField(value = playerNameInput,
             modifier = Modifier.padding(bottom = 20.dp),
             onValueChange = { playerNameInput = it
@@ -160,7 +164,7 @@ fun BodyContentGameOptions(navController: NavController){
             label = {Text( text = if(playerName == ""){ "Introduce tu nombre..." }
                                 else { playerName}, color = Color.Black) })
 
-        StartGameButton("¡Comenzar Partida!", navController)
+        StartGameButton("¡Comenzar Partida!", navController, Modifier.weight(1f).padding(bottom = 40.dp))
     }
 }
 
@@ -282,17 +286,17 @@ fun Dropdown() {
 }
 
 @Composable
-fun StartGameButton(text : String, navController: NavController){
+fun StartGameButton(text : String, navController: NavController, modifier: Modifier = Modifier){
     //Variable que refleja si la configuracion de la partida es valida y puede avanzar a la siguiente escena
     var allValuesCorrect by remember { mutableStateOf(false)}
     allValuesCorrect = CheckNoDefaultValues()
     var canQuery by remember { mutableStateOf(false)}
 
-    ElevatedButton(modifier = Modifier.size(width = 250.dp, height = 50.dp).padding(horizontal = 5.dp),
+    ElevatedButton(modifier = modifier.size(width = 250.dp, height = 50.dp).padding(horizontal = 5.dp),
         onClick =  {
             if(allValuesCorrect){
                 canQuery = true
-                navController.navigate(Screen.Game.route+"/${playerName}/${selectedCategory}/${selectedDifficulty}/${selectedNumber}")}},
+                navController.navigate(Screen.Game.route+"/${playerName}/${selectedCategory}/${selectedDifficulty}/${selectedNumber}"){popUpTo(Screen.GameOptions.route){inclusive = true} }}},
         colors = ButtonDefaults.buttonColors(Color.White)) {
         Text(text = "${text}",
             style = TextStyle(
