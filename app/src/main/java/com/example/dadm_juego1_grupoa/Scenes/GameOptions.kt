@@ -243,10 +243,6 @@ fun CreateStringButton(text : String){
 fun Dropdown() {
     // Estado para el menú desplegable
     var expanded by remember { mutableStateOf(false) }
-    var selectedOption by remember { mutableStateOf(
-        if(selectedCategory == ""){"Pulsa para seleccionar"}
-        else{ selectedCategory }
-    )}
 
     Column(
         modifier = Modifier.fillMaxWidth().padding(bottom = 10.dp),
@@ -257,7 +253,8 @@ fun Dropdown() {
         ElevatedButton(modifier = Modifier.size(width = 250.dp, height = 40.dp),
             onClick =  { expanded = true },
             colors = ButtonDefaults.buttonColors(Color.White)) {
-            Text(text = selectedOption,
+            Text(text = if(selectedCategory == ""){"Pulsa para Seleccionar"}
+                        else{ selectedCategory },
                 style = TextStyle(
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold, color = Color.Black))
@@ -274,9 +271,8 @@ fun Dropdown() {
             for (option in options) {
                 DropdownMenuItem(
                     text = { Text(text = option) }, // Cambiar el uso aquí
-                    onClick = {
-                        selectedOption = option // Actualiza la opción seleccionada
-                        selectedCategory = selectedOption
+                    onClick = { // Actualiza la opción seleccionada
+                        selectedCategory = option
                         expanded = false // Cierra el menú después de seleccionar
                     }
                 )
