@@ -69,6 +69,20 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
+            else {
+                executor.execute {
+                    if (!hayDatosEnLaBaseDeDatos(database)) {
+                        try {
+                            Log.d("BodyContentPlaying", "No hay datos en la base de datos, cargando datos desde el archivo CSV...")
+                            cargarDatosDesdeCSV(context, database)
+                            Log.d("BodyContentPlaying", "Datos cargados con éxito")
+                        } catch (e: Exception) {
+                            Log.e("BodyContentPlaying", "Error al cargar preguntas: ${e.message}", e)
+                            Toast.makeText(context, "Error al cargar las preguntas: ${e.message}", Toast.LENGTH_LONG).show()
+                        }
+                    }
+                }
+            }
 
             // Limpiar el executor cuando el composable se descarte
             onDispose {
@@ -88,6 +102,13 @@ class MainActivity : ComponentActivity() {
             putBoolean("isFirstLaunch", false)
             apply()
         }
+    }
+
+    private fun hayDatosEnLaBaseDeDatos(database: AppDatabase): Boolean {
+        // Aquí debes implementar tu lógica para verificar si hay datos en la base de datos.
+        // Por ejemplo, puedes contar el número de elementos en una tabla específica:
+        val listaPreguntas: List<Pregunta> = database.preguntaDao().obtenerTodasLasPreguntas()
+        return listaPreguntas.isNotEmpty()
     }
 
 }
