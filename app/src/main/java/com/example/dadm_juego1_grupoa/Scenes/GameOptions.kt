@@ -49,8 +49,15 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.compose.runtime.*
 import androidx.compose.ui.input.pointer.motionEventSpy
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.createFontFamilyResolver
+import com.example.dadm_juego1_grupoa.dataBase.AppDatabase
+import com.example.dadm_juego1_grupoa.dataBase.UserConfig
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 //Variables globales donde se almacena la ultima configuracion utilizada
 //Estas variables se pasan a la siguiente escena para realizar las consultas a la BD
@@ -59,14 +66,20 @@ var selectedCategory by mutableStateOf("")
 var selectedNumber by mutableStateOf(15)
 var selectedDifficulty by mutableStateOf("Fácil")
 
+var userConfiguration : UserConfig? = null
+
 @Composable
 fun BodyContentGameOptions(navController: NavController){
+
+    LoadLastConfiguration()
 
     val colors = listOf(
         MaterialTheme.colorScheme.background, // Azul claro
         MaterialTheme.colorScheme.surface // Color rosado claro
     ) // Colores del degradado
     val brush = Brush.linearGradient(colors)
+
+
     //Variable que actualiza lo que escribe el jugador en el inputfield
     var playerNameInput by remember { mutableStateOf("") }
 
@@ -231,7 +244,7 @@ fun Dropdown() {
     // Estado para el menú desplegable
     var expanded by remember { mutableStateOf(false) }
     var selectedOption by remember { mutableStateOf(
-        if(selectedCategory == ""){"Pulsa para seleccionar una categoria"}
+        if(selectedCategory == ""){"Pulsa para seleccionar"}
         else{ selectedCategory }
     )}
 
@@ -274,9 +287,15 @@ fun Dropdown() {
 
 @Composable
 fun StartGameButton(text : String, navController: NavController){
+    //Variable que refleja si la configuracion de la partida es valida y puede avanzar a la siguiente escena
+    var allValuesCorrect by remember { mutableStateOf(false)}
+    allValuesCorrect = CheckNoDefaultValues()
+    var canQuery by remember { mutableStateOf(false)}
+
     ElevatedButton(modifier = Modifier.size(width = 250.dp, height = 50.dp).padding(horizontal = 5.dp),
         onClick =  {
-            if(selectedCategory != "" && selectedDifficulty != "" && selectedNumber != 0 && playerName != ""){
+            if(allValuesCorrect){
+                canQuery = true
                 navController.navigate(Screen.Game.route+"/${playerName}/${selectedCategory}/${selectedDifficulty}/${selectedNumber}")}},
         colors = ButtonDefaults.buttonColors(Color.White)) {
         Text(text = "${text}",
@@ -284,9 +303,65 @@ fun StartGameButton(text : String, navController: NavController){
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold, color = Color.Black))
     }
+
+    //Si podemos empezar la partida, guardamos en la base de datos la configuracion usada
+    //Esto es para que solo haga la query cuando los datos de configuracion tienen valores correctos y se pulsa el boton
+    if(canQuery) SaveLastConfiguration()
 }
 
+//Funcion que comprueba que los datos de la configuacion de la partida esten correctos
+fun CheckNoDefaultValues(): Boolean{
+   return playerName != "" && selectedDifficulty != "" && selectedNumber != 0 && selectedCategory != ""
+}
 
+//Funcion que pide a la base de datos la ultima configuracion de partida utilizada
+@Composable
+fun LoadLastConfiguration() {
+        val context = LocalContext.current
+        val database = AppDatabase.getDatabase(context)
+
+        //Mediante una corutina hacemos la peticion, si la tabla esta vacia capturamos la excepcion, si la tabla tiene
+        //datos guardados, los extraemos y los guardamos en la variable userConfiguration
+        LaunchedEffect(Unit) {
+            try {
+                CoroutineScope(Dispatchers.IO).launch {
+                    val configuration: UserConfig? = database.userConfigDao().obtenerUserConfig()
+
+                    configuration?.let {
+                        playerName = configuration.nombre
+                        selectedCategory = configuration.categoria
+                        selectedNumber = configuration.numPreguntas
+                        selectedDifficulty = configuration.dificultad
+                    }
+                    //Indicamos que la s intrucciones dentro del bloque {} lo ejecute el hilo principal
+                    withContext(Dispatchers.Main) {
+                        userConfiguration = configuration
+                    }
+                }
+            } catch (e: Exception){}
+        }
+}
+
+//Funcion que guarda la ultima configuracion de la partida en la base de datos
+@Composable
+fun SaveLastConfiguration(){
+    val context = LocalContext.current
+    val database = AppDatabase.getDatabase(context)
+
+    //Mediante una corutina creamos un objeto UserConfig, limpiamos la tabla y guardamos la nueva fila
+    LaunchedEffect(Unit) {
+        CoroutineScope(Dispatchers.IO).launch { //Dispatchers.IO nos garantiza que no se bloquee el hilo principal con operaciones IO
+            var configuration = UserConfig(
+                nombre = playerName,
+                categoria = selectedCategory,
+                numPreguntas = selectedNumber,
+                dificultad = selectedDifficulty
+            )
+            database.userConfigDao().deleteLastConfiguration()
+            database.userConfigDao().insertarUserConfig(configuration)
+        }
+    }
+}
 
 /*@Preview
 @Composable

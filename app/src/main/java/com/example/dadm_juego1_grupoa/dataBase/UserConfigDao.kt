@@ -2,16 +2,18 @@ package com.example.dadm_juego1_grupoa.dataBase
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Upsert
 
 @Dao
 interface UserConfigDao {
-    @Insert
-    fun insertarUserConfig(userConfig: List<UserConfig>)
+    @Upsert
+    fun insertarUserConfig(userConfig: UserConfig)
 
-    @Query("SELECT * FROM userConfig")
-    fun obtenerUserConfig(): List<UserConfig>
+    @Query("SELECT * FROM userConfig LIMIT 1")
+    fun obtenerUserConfig(): UserConfig?
 
-    @Query("UPDATE userConfig SET nombre = :nombre, categoria = :categoria, numPreguntas = :numPreguntas, dificultad = :dificultad WHERE id = 0")
-    fun actualizarPregunta(id: Int, nombre: String, categoria: String, numPreguntas: Int, dificultad: String)
+    @Query("DELETE FROM userConfig")
+    fun deleteLastConfiguration()
 }
