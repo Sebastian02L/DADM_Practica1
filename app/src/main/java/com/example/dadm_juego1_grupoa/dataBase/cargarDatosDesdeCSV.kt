@@ -12,7 +12,7 @@ fun cargarDatosDesdeCSV(context: Context, database: AppDatabase) {
 
     reader.forEachLine { line ->
         val tokens = line.split(",")
-        if (tokens.size == 7) {
+        if (tokens.size == 8) {
             val pregunta = Pregunta(
                 pregunta = tokens[0],
                 tipo = tokens[1],
@@ -20,7 +20,8 @@ fun cargarDatosDesdeCSV(context: Context, database: AppDatabase) {
                 respuestaC = tokens[3],
                 respuestaI1 = tokens[4],
                 respuestaI2 = tokens[5],
-                respuestaI3 = tokens[6]
+                respuestaI3 = tokens[6],
+                puntos = tokens[7].toInt()
             )
             preguntas.add(pregunta)
         }

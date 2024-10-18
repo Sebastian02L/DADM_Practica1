@@ -12,6 +12,7 @@ data class Pregunta(
     val respuestaC: String,
     val respuestaI1: String,
     val respuestaI2: String,
-    val respuestaI3: String
+    val respuestaI3: String,
+    val puntos: Int
 )
 

@@ -57,19 +57,19 @@ import androidx.compose.material3.Surface
 import androidx.compose.animation.core.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.graphicsLayer
+import com.example.dadm_juego1_grupoa.dataBase.AppDatabase
+import com.example.dadm_juego1_grupoa.dataBase.Ranking
 import kotlinx.coroutines.delay
 
 //import androidx.compose.material.icons.filled.ExpandMore
 import com.example.dadm_juego1_grupoa.ui.theme.DADM_juego1_GrupoATheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-//Escena del menú principal
-//AUN NO ESTA IMPLEMENTADO EL NavController así que no furula
-/*@Composable
-fun StartScreen(navController: NavController){
-    Scaffold {
-        BodyContent(navController)
-    }
-}*/
+var rankingEntertainment: List<Ranking> = listOf()
+var rankingGeneralCulture: List<Ranking> = listOf()
 
 //Contenido de la escena Start Screen
 @Composable
@@ -82,6 +82,19 @@ fun BodyContentRanking(navController: NavController,
 
     //VARIABLES
     val context = LocalContext.current
+    val database = AppDatabase.getDatabase(context)
+
+    LaunchedEffect (Unit){
+        CoroutineScope(Dispatchers.IO).launch{
+            var rankingEntretenimiento : List<Ranking> = database.rankingDao().obtenerRanking("Entretenimiento")
+            var rankingCulturaGeneral : List<Ranking> = database.rankingDao().obtenerRanking("Cultura General")
+
+            withContext(Dispatchers.Main){
+                rankingEntertainment = rankingEntretenimiento
+                rankingGeneralCulture = rankingCulturaGeneral
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -214,18 +227,20 @@ private fun CardContent(name:String, modifier: Modifier)
                 if(name == "Entretenimiento"){
                     //COGER MEJORES RESULTADOS DE QUERY
                     //*************************************************//
-                    Text(text = "Result 1 ")
-                    Text(text = "Result 2 ")
-                    Text(text = "Result 3 ")
+                    rankingEntertainment.take(3).forEach{
+                        ranking ->
+                        Text("${ranking.nombre} ${ranking.puntuacion}")
+                    }
                 }
                 //Values de Cultura general
                 else if(name == "Cultura General")
                 {
                     //COGER MEJORES RESULTADOS DE QUERY
                     //*************************************************//
-                    Text(text = "Result 4 ")
-                    Text(text = "Result 5 ")
-                    Text(text = "Result 6 ")
+                    rankingGeneralCulture.take(3).forEach{
+                            ranking ->
+                        Text("${ranking.nombre} ${ranking.puntuacion}")
+                    }
                 }
 
             }
@@ -251,11 +266,3 @@ private fun CardContent(name:String, modifier: Modifier)
     }
     }
 }
-
-/*@Preview(showBackground = true)
-@Composable
-fun RankingPrev() {
-    DADM_juego1_GrupoATheme {
-        BodyContentRanking()
-    }
-}*/

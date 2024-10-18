@@ -8,8 +8,8 @@ import androidx.room.Query
 @Dao
 interface RankingDao {
     @Insert
-    fun insertarRanking(ranking: List<Ranking>)
+    fun insertarRanking(ranking: Ranking)
 
-    @Query("SELECT * FROM ranking")
-    fun obtenerRanking(): List<Ranking>
+    @Query("SELECT * FROM ranking  WHERE categoria = :category ORDER BY puntuacion DESC LIMIT 3")
+    fun obtenerRanking(category: String): List<Ranking>
 }

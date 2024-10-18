@@ -78,6 +78,7 @@ fun BodyContentGame(navController: NavController, playerName : String, category 
 
     // Variables para almacenar las preguntas y respuestas
     var questionsAndAnswers = remember { mutableStateOf(listOf<Pair<String, List<String>>>()) }
+    var pointsPerQuestion: List<Int> by rememberSaveable { mutableStateOf(listOf()) }
     var currentQuestionIndex by rememberSaveable { mutableStateOf(0) }
     var selectedAnswer by rememberSaveable { mutableStateOf<String?>(null) }
     var answerColor by remember { mutableStateOf(Color.White) }
@@ -116,9 +117,16 @@ fun BodyContentGame(navController: NavController, playerName : String, category 
                 question.pregunta to listOf(question.respuestaC, question.respuestaI1, question.respuestaI2, question.respuestaI3)
             }
 
+            val pointsList: MutableList<Int> = mutableListOf()
+
+            for (question in questionsDataBase){
+                pointsList.add(question.puntos)
+            }
+
             // Actualizamos el estado en el hilo principal
             withContext(Dispatchers.Main) {
                 questionsAndAnswers.value = qaList
+                pointsPerQuestion = pointsList
             }
         }
     }
@@ -135,7 +143,7 @@ fun BodyContentGame(navController: NavController, playerName : String, category 
             if (currentQuestionIndex < questionsAndAnswers.value.lastIndex) {
                 currentQuestionIndex++
             } else {
-                navController.navigate(Screen.Score.route+"/${playerName}/${nQuestions}/${correctAnswers}/${points}/${timePerQuestion.joinToString(",")}")
+                navController.navigate(Screen.Score.route+"/${playerName}/${nQuestions}/${correctAnswers}/${points}/${timePerQuestion.joinToString(",")}/${category}")
             }
             selectedAnswer = null
             answerColor = Color.White
@@ -232,14 +240,14 @@ fun BodyContentGame(navController: NavController, playerName : String, category 
                                 delay(2000L)
                                 questionsCompleted++
                                 if (answer == correctAnswer) {
-                                    points += 100 - (30-time)
+                                    points += pointsPerQuestion[currentQuestionIndex] - (30-time)
                                     correctAnswers++
                                 }
 
                                 if (currentQuestionIndex < questionsAndAnswers.value.lastIndex) {
                                     currentQuestionIndex++
                                 } else {
-                                    navController.navigate(Screen.Score.route+"/${playerName}/${nQuestions}/${correctAnswers}/${points}/${timePerQuestion.joinToString(",")}")
+                                    navController.navigate(Screen.Score.route+"/${playerName}/${nQuestions}/${correctAnswers}/${points}/${timePerQuestion.joinToString(",")}/${category}")
                                 }
                                 selectedAnswer = null
                                 answerColor = Color.White

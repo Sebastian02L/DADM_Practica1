@@ -5,10 +5,11 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import android.content.Context
 
-@Database(entities = [Pregunta::class, UserConfig::class], version = 3, exportSchema = false)
+@Database(entities = [Pregunta::class, UserConfig::class, Ranking::class], version = 6, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun preguntaDao(): PreguntaDao
     abstract fun userConfigDao() : UserConfigDao
+    abstract fun rankingDao(): RankingDao
 
     companion object {
         @Volatile

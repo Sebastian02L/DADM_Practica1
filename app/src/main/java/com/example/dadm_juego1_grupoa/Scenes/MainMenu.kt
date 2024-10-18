@@ -1,5 +1,6 @@
 package com.example.dadm_juego1_grupoa.Scenes
 
+import android.app.Activity
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,15 +29,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.navigation.NavController
 import org.w3c.dom.Text
-
-//Escena del menú principal
-//AUN NO ESTA IMPLEMENTADO EL NavController así que no furula
-/*@Composable
-fun StartScreen(navController: NavController){
-    Scaffold {
-        BodyContent(navController)
-    }
-}*/
 
 //Contenido de la escena Start Screen
 @Composable
@@ -80,113 +72,9 @@ fun BodyContent(navController: NavController){
             //FUNCION DE PASO ESCENAS CON navController (recordar usar el mediaPlayer?.start justo después)
 
         }) { }
-        CustomElevatedButton("Resultados",onClick = {
-            navController.navigate(Screen.Score.route)
-            //FUNCION DE PASO ESCENAS CON navController (recordar usar el mediaPlayer?.start justo después)
-
-        }) { }
         CustomElevatedButton("Salir",onClick = {
-            //FUNCION DE PASO ESCENAS CON navController (recordar usar el mediaPlayer?.start justo después)
-
+            (context as? Activity)?.finish()
         }) { }
-/*
-        Text(
-            text = "TRIVIAL GAME",
-            style = TextStyle(
-                fontSize = 66.sp,
-                fontWeight = FontWeight.Bold,
-            ),
-            color = Color(0xFFE8FAF6),
-            modifier = Modifier.padding(16.dp),
-            textAlign = TextAlign.Center,
-
-            )
-
-//Boton de inicio de partida
-        ElevatedButton(
-            onClick = {
-                //FUNCION DE PASO ESCENAS CON navController (recordar usar el mediaPlayer?.start justo después)
-                navController.navigate(Screen.GameOptions.route)
-            },
-            modifier = Modifier.padding(16.dp),
-            shape = MaterialTheme.shapes.medium,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF2AA896)
-            )
-        ) {
-            Text(
-                text = "Jugar",
-                fontSize = 32.sp,
-                fontWeight = FontWeight.Bold,
-//                fontFamily = montserratFontFamily,
-                color = Color.White
-            )
-        }
-        ElevatedButton(
-            onClick = {
-                navController.navigate(Screen.Ranking.route)
-                //FUNCION DE PASO ESCENAS CON navController (recordar usar el mediaPlayer?.start justo después)
-
-            },
-            modifier = Modifier.padding(16.dp),
-            shape = MaterialTheme.shapes.medium,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF2AA896)
-            )
-        ) {
-            Text(
-                text = "Ranking",
-                fontSize = 32.sp,
-                fontWeight = FontWeight.Bold,
-//                fontFamily = montserratFontFamily,
-                color = Color.White
-            )
-        }
-
-
-        //BOTON PARA IR A RESULTADOS, NO ESTARA AQUI EN LA VER FINAL
-        ElevatedButton(
-            onClick = {
-                navController.navigate(Screen.Score.route)
-                //FUNCION DE PASO ESCENAS CON navController (recordar usar el mediaPlayer?.start justo después)
-
-            },
-            modifier = Modifier.padding(16.dp),
-            shape = MaterialTheme.shapes.medium,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF2AA896)
-            )
-        ) {
-            Text(
-                text = "Resultados",
-                fontSize = 32.sp,
-                fontWeight = FontWeight.Bold,
-//                fontFamily = montserratFontFamily,
-                color = Color.White
-            )
-        }
-        ElevatedButton(
-            onClick = {
-                //FUNCION DE PASO ESCENAS CON navController (recordar usar el mediaPlayer?.start justo después)
-
-            },
-            modifier = Modifier.padding(16.dp),
-            shape = MaterialTheme.shapes.medium,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF2AA896)
-            )
-        ) {
-            Text(
-                text = "Salir",
-                fontSize = 32.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.White
-            )
-        }
-        */
-
-
-
     }
 }
 
@@ -247,11 +135,3 @@ fun CustomText(text: String, sizeText:Int)  {
         )
     }
 }
-/*
-@Preview
-@Composable
-fun MainMenuPrev() {
-    DADM_juego1_GrupoATheme {
-        BodyContent()
-    }
-}*/
