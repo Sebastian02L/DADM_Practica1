@@ -6,9 +6,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+//import androidx.compose.foundation.layout.FlowRowScopeInstance.weight
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
@@ -31,6 +34,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -48,8 +52,11 @@ import kotlinx.coroutines.launch
 @Composable
 fun BodyContentScore(navController: NavController, playerName : String, nQuestions : Int, correctAnswers : Int, points : Int, timePerQuestion : List<Int>, category : String){
     //ESTILOS
-    val colors = listOf(Color(0xFF1F6D78), Color(0xFFFFFFFF)) // Colores del degradado
-    val brush = Brush.sweepGradient(colors, Offset.Zero)
+    val colors = listOf(
+        MaterialTheme.colorScheme.background, // Azul claro
+        MaterialTheme.colorScheme.surface // Color rosado claro
+    ) // Colores del degradado
+    val brush = Brush.linearGradient(colors)
 
     //VARIABLES
     val context = LocalContext.current
@@ -77,16 +84,21 @@ fun BodyContentScore(navController: NavController, playerName : String, nQuestio
         modifier = Modifier
             .fillMaxSize()
             .background(brush), // Color degradado fondo
-        verticalArrangement = Arrangement.spacedBy(20.dp),
+        //verticalArrangement = Arrangement.spacedBy(20.dp),
+        verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally
     )
     {
+        /*
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.padding(20.dp) // Añadir padding al Row si es necesario
+            .weight(1.5f)
     ) {
 
         //Texto
+        CustomText("RESULTADOS", 55, modifier = Modifier.weight(1.5f))
+        /*
         Text(
             text = "RESULTADOS",
             style = TextStyle(
@@ -96,8 +108,10 @@ fun BodyContentScore(navController: NavController, playerName : String, nQuestio
             color = Color(0xFFEFB8C8),
             //modifier = Modifier.padding(16.dp),
             textAlign = TextAlign.Center,
-        )
-    }
+        )*/
+
+    }*/
+        CustomText("RESULTADOS", 55, modifier = Modifier.weight(1f))
 
         Card(
             colors = CardDefaults.cardColors(
@@ -110,12 +124,7 @@ fun BodyContentScore(navController: NavController, playerName : String, nQuestio
             Box(
                 modifier = Modifier
                     .background( // Aplica el gradiente de fondo
-                        brush = Brush.linearGradient(
-                            colors = listOf(
-                                Color(0xFF42A5F5), // Azul claro
-                                Color(0xFFEFB8C8)  // Color rosado claro
-                            )
-                        )
+                        color = MaterialTheme.colorScheme.primary
                     )
                     .clip(RoundedCornerShape(16.dp)) // Aplica el recorte a las esquinas
             ) {
@@ -134,16 +143,15 @@ fun BodyContentScore(navController: NavController, playerName : String, nQuestio
             Box(
                 modifier = Modifier
                     .background( // Aplica el gradiente de fondo
-                        brush = Brush.linearGradient(
-                            colors = listOf(
-                                Color(0xFF42A5F5), // Azul claro
-                                Color(0xFFEFB8C8)  // Color rosado claro
-                            )
-                        )
+                        color = MaterialTheme.colorScheme.primary
                     )
+
                     .clip(RoundedCornerShape(16.dp)) // Aplica el recorte a las esquinas
             ) {
-                CardContent("Respuestas correctas: " + correctAnswers +"/$nQuestions", modifier = Modifier)
+                CardContent(
+                    "Respuestas correctas: " + correctAnswers + "/$nQuestions",
+                    modifier = Modifier
+                )
             }
         }
 
@@ -158,21 +166,33 @@ fun BodyContentScore(navController: NavController, playerName : String, nQuestio
             Box(
                 modifier = Modifier
                     .background( // Aplica el gradiente de fondo
-                        brush = Brush.linearGradient(
-                            colors = listOf(
-                                Color(0xFF42A5F5), // Azul claro
-                                Color(0xFFEFB8C8)  // Color rosado claro
-                            )
-                        )
+                        color = MaterialTheme.colorScheme.primary
                     )
                     .clip(RoundedCornerShape(16.dp)) // Aplica el recorte a las esquinas
             ) {
-                CardContent("Tiempo total: " + totalTime + "\n \n" +"TiempoMedio: " +averageTime, modifier = Modifier)
+                CardContent(
+                    "Tiempo total: " + totalTime + "\n \n" + "TiempoMedio: " + averageTime,
+                    modifier = Modifier
+                )
                 //CardContent("Tiempo total: \n\n Tiempo medio:", modifier = Modifier)
             }
         }
 
-        ElevatedButton(
+        CustomElevatedButton(
+            "Volver a jugar",
+            onClick = {
+                mediaPlayer.start()
+                navController.navigate(Screen.GameOptions.route)
+
+            }
+        ) { }
+        CustomElevatedButton(
+            "Volver al menú",
+            onClick = {
+                navController.navigate(Screen.MainMenu.route)
+            }
+        ) { }
+        /*ElevatedButton(
             onClick = {
                 mediaPlayer.start()
                 navController.navigate(Screen.GameOptions.route)
@@ -212,6 +232,8 @@ fun BodyContentScore(navController: NavController, playerName : String, nQuestio
                 color = Color.White
             )
         }
+        */
+
 }
 }
 @Composable
@@ -225,9 +247,12 @@ private fun CardContent(name:String, modifier: Modifier)
             //.padding(bottom = buttonPadding)
             .padding((24.dp))
         ){
-
-            Text(text = name,
+            Text(
+                text = name,
                 style = MaterialTheme.typography.headlineMedium,
+                fontFamily = FontFamily.Serif,
+                fontWeight = FontWeight.Bold,
+                color = Color.White,
                 modifier = modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center //modificacion del materialTheme
             )

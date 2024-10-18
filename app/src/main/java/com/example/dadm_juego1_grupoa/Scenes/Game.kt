@@ -65,8 +65,13 @@ fun BodyContentGame(navController: NavController, playerName : String, category 
 
 
 
-    val colors = listOf(Color(0xFF1F6D78), Color(0xFFFFFFFF)) // Colores del degradado
-    val brush = Brush.sweepGradient(colors, Offset.Zero)
+    //ESTILOS
+    val colors = listOf(
+        MaterialTheme.colorScheme.background, // Azul claro
+        MaterialTheme.colorScheme.surface // Color rosado claro
+    ) // Colores del degradado
+    val brush = Brush.linearGradient(colors)
+
     val context = LocalContext.current
     val database = AppDatabase.getDatabase(context)
     var questionsCompleted: Int by rememberSaveable { mutableStateOf(1) }

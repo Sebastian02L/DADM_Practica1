@@ -60,21 +60,21 @@ fun BodyContent(navController: NavController){
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        CustomText("TRIVIAL GAME",66)
+        CustomText("TRIVIAL GAME",66,Modifier)
         //Titulo del juego
 
         CustomElevatedButton("Jugar",onClick = {
             //FUNCION DE PASO ESCENAS CON navController (recordar usar el mediaPlayer?.start justo después)
             navController.navigate(Screen.GameOptions.route)
-        }) { }
+        },) { }
         CustomElevatedButton("Ranking",onClick = {
             navController.navigate(Screen.Ranking.route)
             //FUNCION DE PASO ESCENAS CON navController (recordar usar el mediaPlayer?.start justo después)
 
-        }) { }
+        },) { }
         CustomElevatedButton("Salir",onClick = {
             (context as? Activity)?.finish()
-        }) { }
+        },) { }
     }
 }
 
@@ -83,7 +83,8 @@ fun BodyContent(navController: NavController){
 fun CustomElevatedButton(text: String, onClick: () -> Unit, function: () -> Unit) {
     ElevatedButton(
         onClick = onClick,
-        modifier = Modifier.padding(16.dp),
+        modifier = Modifier.padding(16.dp)
+            ,
         //shape = MaterialTheme.shapes.medium,
         shape = RoundedCornerShape(30.dp),
         border = BorderStroke(5.dp, MaterialTheme.colorScheme.secondary),
@@ -105,7 +106,7 @@ fun CustomElevatedButton(text: String, onClick: () -> Unit, function: () -> Unit
 
 
 @Composable
-fun CustomText(text: String, sizeText:Int)  {
+fun CustomText(text: String, sizeText:Int,modifier: Modifier)  {
     Box(
         contentAlignment = Alignment.Center,
         //modifier = Modifier.fillMaxSize()
@@ -118,7 +119,7 @@ fun CustomText(text: String, sizeText:Int)  {
                 fontWeight = FontWeight.Bold,
             ),
             color = MaterialTheme.colorScheme.onPrimary,
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier//.padding(16.dp)
                 .offset(1.dp, 1.dp),
             textAlign = TextAlign.Center,
         )

@@ -1,5 +1,6 @@
 package com.example.dadm_juego1_grupoa.Scenes
 
+import android.graphics.Paint.Align
 import android.graphics.drawable.Drawable
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -55,8 +56,15 @@ import androidx.compose.ui.text.TextStyle
 import androidx.navigation.NavController
 import androidx.compose.material3.Surface
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.*
+import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.VerticalAlignmentLine
+import androidx.compose.ui.text.font.FontFamily
 import com.example.dadm_juego1_grupoa.dataBase.AppDatabase
 import com.example.dadm_juego1_grupoa.dataBase.Ranking
 import kotlinx.coroutines.delay
@@ -77,8 +85,12 @@ fun BodyContentRanking(navController: NavController,
                        categorias : List<String> = listOf( "Entretenimiento", "Cultura General"))
 {
     //ESTILOS
-    val colors = listOf(Color(0xFF1F6D78), Color(0xFFFFFFFF)) // Colores del degradado
-    val brush = Brush.sweepGradient(colors, Offset.Zero)
+    val colors = listOf(
+        MaterialTheme.colorScheme.background, // Azul claro
+        MaterialTheme.colorScheme.surface // Color rosado claro
+    ) // Colores del degradado
+    val brush = Brush.linearGradient(colors)
+
 
     //VARIABLES
     val context = LocalContext.current
@@ -107,6 +119,7 @@ fun BodyContentRanking(navController: NavController,
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(16.dp) // Añadir padding al Row si es necesario
+
         ) {
             //Icono de corona delantero
             Icon(
@@ -114,12 +127,14 @@ fun BodyContentRanking(navController: NavController,
                 painter = painterResource(id = R.drawable.chess_queen), // Reemplaza con tu recurso de ícono
                 contentDescription = "Crown",
                 tint = MaterialTheme.colorScheme.primary, // Aplica el color del tema
-                modifier = Modifier.size(50.dp) // Ajusta el tamaño según sea necesario
+                modifier = Modifier//.size(50.dp) // Ajusta el tamaño según sea necesario
+                    .weight(1f)
                 //    .align(Alignment.CenterVertically)
             )
 
             //Titulo del juego
-            Text(
+            CustomText("RANKING",55,Modifier)
+            /*Text(
                 text = "RANKING",
                 style = TextStyle(
                     fontSize = 55.sp,
@@ -128,7 +143,7 @@ fun BodyContentRanking(navController: NavController,
                 color = Color(0xFFE8FA22),
                 //modifier = Modifier.padding(16.dp),
                 textAlign = TextAlign.Center,
-            )
+            )*/
 
             //Icono corona final
             Icon(
@@ -136,7 +151,8 @@ fun BodyContentRanking(navController: NavController,
                 painter = painterResource(id = R.drawable.chess_queen), // Reemplaza con tu recurso de ícono
                 contentDescription = "Crown",
                 tint = MaterialTheme.colorScheme.primary, // Aplica el color del tema
-                modifier = Modifier.size(50.dp) // Ajusta el tamaño según sea necesario
+                modifier = Modifier//.size(50.dp) // Ajusta el tamaño según sea necesario
+                    .weight(1f)
                 //    .align(Alignment.CenterVertically)
             )
         }
@@ -145,8 +161,7 @@ fun BodyContentRanking(navController: NavController,
         Card(colors = CardDefaults.cardColors(
             containerColor =  Color.Transparent,
         ),
-            modifier = Modifier.padding(vertical=0.dp, horizontal = 0.dp
-            )
+            modifier = Modifier.padding(vertical=0.dp, horizontal = 0.dp)
         ){
             for(cat in categorias){
                 CardContent( name = cat, modifier=Modifier)
@@ -154,7 +169,45 @@ fun BodyContentRanking(navController: NavController,
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
+
+
+        //Boton ir pa atras
+        ElevatedButton(
+            onClick = { navController.navigate(Screen.MainMenu.route) },
+            shape = CircleShape,
+            colors = ButtonDefaults.buttonColors(Color.White),
+            modifier = Modifier
+                //.align(Alignment.BottomStart)
+                .align(Alignment.Start)
+                .padding(start = 10.dp)
+                .size(60.dp) //
+                .border(
+                    width = 5.dp,
+                    color = MaterialTheme.colorScheme.secondary,
+                    shape = CircleShape
+                )
+        ) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "<",
+                    fontFamily = FontFamily.Default,
+                    fontSize = 28.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black
+                )
+            }
+        }
+
+
+
     }
+
+
+
+
 
 }
 
@@ -194,9 +247,10 @@ private fun CardContent(name:String, modifier: Modifier)
 
 
     Surface (color = MaterialTheme.colorScheme.primary ,
-            shape = RoundedCornerShape(16.dp),
-            modifier = modifier.padding(vertical = 4.dp, horizontal = 8.dp))
-        {
+            shape = RoundedCornerShape(30.dp),
+            modifier = modifier.padding(vertical = 4.dp, horizontal = 8.dp)
+                .border(5.dp, MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(30.dp))
+    ){
 
 
     Row (modifier=Modifier.padding(12.dp)
@@ -218,7 +272,10 @@ private fun CardContent(name:String, modifier: Modifier)
             Text(
                 text = name,
                 style = MaterialTheme.typography.headlineMedium, //modificacion del materialTheme
-
+                fontFamily = FontFamily.Serif,
+                fontSize = 32.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.White
             )
             //VALORES DE LOS TRES MEJORES RESULTADOS
             if (expanded.value)

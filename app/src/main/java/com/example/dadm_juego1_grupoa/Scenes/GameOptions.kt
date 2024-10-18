@@ -95,34 +95,7 @@ fun BodyContentGameOptions(navController: NavController){
         Row(modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center){
             //Boton de salir
-            ElevatedButton(
-                onClick = { navController.navigate(Screen.MainMenu.route) },
-                shape = CircleShape,
-                colors = ButtonDefaults.buttonColors(Color.White),
-                modifier = Modifier
-                    .padding(start = 10.dp)
-                    .size(60.dp) //
-                    .border(
-                        width = 5.dp,
-                        color = MaterialTheme.colorScheme.secondary,
-                        shape = CircleShape
-                    )
-                    .weight(1f)
 
-            ) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center 
-                ) {
-                    Text(
-                        text = "<",
-                        fontFamily = FontFamily.Default,
-                        fontSize = 28.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.Black
-                    )
-                }
-            }
             //Padding con lo que tiene arriba 
             CreateMainTitleCard("AJUSTES DE LA PARTIDA", Modifier.padding(start = 25.dp, end= 10.dp).weight(6f))
         }
@@ -164,7 +137,40 @@ fun BodyContentGameOptions(navController: NavController){
             label = {Text( text = if(playerName == ""){ "Introduce tu nombre..." }
                                 else { playerName}, color = Color.Black) })
 
-        StartGameButton("¡Comenzar Partida!", navController, Modifier.weight(1f).padding(bottom = 40.dp))
+        Row {
+            ElevatedButton(
+                onClick = { navController.navigate(Screen.MainMenu.route) },
+                shape = CircleShape,
+                colors = ButtonDefaults.buttonColors(Color.White),
+                modifier = Modifier
+                    .padding(start = 10.dp)
+                    .size(60.dp) //
+                    .border(
+                        width = 5.dp,
+                        color = MaterialTheme.colorScheme.secondary,
+                        shape = CircleShape
+                    )
+                    .weight(0.3f)
+
+            ) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "<",
+                        fontFamily = FontFamily.Default,
+                        fontSize = 28.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black
+                    )
+                }
+            }
+
+
+            StartGameButton("¡Comenzar Partida!", navController, Modifier.weight(1.5f).padding(bottom = 40.dp))
+
+        }
     }
 }
 
