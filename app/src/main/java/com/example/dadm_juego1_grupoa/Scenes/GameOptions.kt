@@ -234,10 +234,15 @@ fun CreateTitleCard(title : String, modifier : Modifier = Modifier){
     }
 }
 
-@Composable
+@Composable//
 fun CreateNumberButton(number : Int){
+    val context = LocalContext.current
+
     ElevatedButton(modifier = Modifier.size(width = 80.dp, height = 50.dp).padding(horizontal = 5.dp),
-        onClick =  { selectedNumber = number },
+        onClick =  {
+            // Reproducir efecto de sonido al hacer pulsar boton
+            (context as? MainActivity)?.playbeep()
+            selectedNumber = number },
         colors = if(selectedNumber != number) { ButtonDefaults.buttonColors(Color.White) }
                 else{ ButtonDefaults.buttonColors(Color.LightGray) }) {
 
@@ -248,10 +253,16 @@ fun CreateNumberButton(number : Int){
     }
 }
 
-@Composable
+@Composable//
 fun CreateStringButton(text : String){
+    val context = LocalContext.current
+
     ElevatedButton(modifier = Modifier.size(width = 110.dp, height = 60.dp).padding(horizontal = 5.dp),
-        onClick =  { selectedDifficulty = text },
+        onClick =  {
+            // Reproducir efecto de sonido al hacer pulsar boton
+            (context as? MainActivity)?.playbeep()
+
+            selectedDifficulty = text },
         colors = if(selectedDifficulty != text){ ButtonDefaults.buttonColors(Color.White) }
                 else{ButtonDefaults.buttonColors(Color.LightGray)}) {
         Text(text = "${text}",
@@ -261,8 +272,10 @@ fun CreateStringButton(text : String){
     }
 }
 
-@Composable
+@Composable//
 fun Dropdown() {
+    val context = LocalContext.current
+
     // Estado para el menú desplegable
     var expanded by remember { mutableStateOf(false) }
 
@@ -273,7 +286,11 @@ fun Dropdown() {
     ) {
         // Botón para mostrar el menú desplegable
         ElevatedButton(modifier = Modifier.size(width = 250.dp, height = 40.dp),
-            onClick =  { expanded = true },
+            onClick =  {
+                // Reproducir efecto de sonido al hacer pulsar boton
+                (context as? MainActivity)?.playsniff()
+
+                expanded = true },
             colors = ButtonDefaults.buttonColors(Color.White)) {
             Text(text = if(selectedCategory == ""){"Pulsa para Seleccionar"}
                         else{ selectedCategory },
@@ -293,7 +310,10 @@ fun Dropdown() {
             for (option in options) {
                 DropdownMenuItem(
                     text = { Text(text = option) }, // Cambiar el uso aquí
-                    onClick = { // Actualiza la opción seleccionada
+                    onClick = {
+                        // Reproducir efecto de sonido al hacer pulsar boton
+                        (context as? MainActivity)?.playbeep()
+                        // Actualiza la opción seleccionada
                         selectedCategory = option
                         expanded = false // Cierra el menú después de seleccionar
                     }

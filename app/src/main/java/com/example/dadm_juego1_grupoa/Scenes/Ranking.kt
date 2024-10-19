@@ -231,6 +231,7 @@ private fun CardContent(name:String, modifier: Modifier)
     var expanded = rememberSaveable(){mutableStateOf(false)};//con esta funcion, se guarda el estado
     //val buttonPadding = if(expanded.value)48.dp else 0.dp;
     val rotationAnimation = remember { Animatable(0f) }///////
+    val context = LocalContext.current
 
     ///////////////////////***************////////////////////////////
     // Un efecto de lanzamiento que aplica una animación de sacudida
@@ -269,7 +270,12 @@ private fun CardContent(name:String, modifier: Modifier)
         .animateContentSize(animationSpec = spring(
             dampingRatio = Spring.DampingRatioHighBouncy,
             stiffness = Spring.StiffnessLow))
-        .clickable(onClick = { expanded.value = !expanded.value })
+        .clickable(onClick = {
+            // Reproducir efecto de sonido al hacer pulsar carta
+            (context as? MainActivity)?.playsniff()
+            //cambiar valor de expandido
+            expanded.value = !expanded.value
+        })
         .graphicsLayer { rotationZ = rotationAnimation.value } /////////////////////
 
     )

@@ -44,6 +44,8 @@ class MainActivity : ComponentActivity() {
     private var soundId2: Int = 0
     private var soundId3: Int = 0
     private var soundId4: Int = 0
+    private var soundId5: Int = 0
+    private var soundId6: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,7 +58,7 @@ class MainActivity : ComponentActivity() {
             .build()
 
         soundPool = SoundPool.Builder()
-            .setMaxStreams(2)
+            .setMaxStreams(1)
             .setAudioAttributes(audioAttributes)
             .build()
 
@@ -64,6 +66,8 @@ class MainActivity : ComponentActivity() {
         soundId2 = soundPool.load(this, R.raw.botonback, 1)
         soundId3 = soundPool.load(this, R.raw.correctanswer, 1)
         soundId4 = soundPool.load(this, R.raw.failanswer, 1)
+        soundId5 = soundPool.load(this, R.raw.beep, 1)
+        soundId6 = soundPool.load(this, R.raw.sniff, 1)
 
 
         setContent {
@@ -162,6 +166,12 @@ class MainActivity : ComponentActivity() {
     }
     fun playbadAnswer() {
         soundPool.play(soundId4, 1f, 1f, 0, 0, 1f)
+    }
+    fun playbeep() {
+        soundPool.play(soundId5, 1f, 1f, 0, 0, 1f)
+    }
+    fun playsniff() {
+        soundPool.play(soundId6, 1f, 1f, 0, 0, 1f)
     }
 
     override fun onDestroy() {
