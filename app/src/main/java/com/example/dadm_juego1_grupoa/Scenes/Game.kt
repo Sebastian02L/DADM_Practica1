@@ -223,7 +223,7 @@ fun BodyContentGame(navController: NavController, playerName : String, category 
             QACard(
                 questionsAndAnswers.value[currentQuestionIndex].first,
                 onClick = {},
-                modifier = Modifier.weight(1.5f),
+                modifier = Modifier.weight(2f),
                 color = MaterialTheme.colorScheme.primary
             )
 
