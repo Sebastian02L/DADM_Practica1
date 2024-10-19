@@ -357,7 +357,7 @@ fun QACard(qa : String, modifier : Modifier = Modifier, isAnswer : Boolean = fal
                     textAlign = TextAlign.Center //Alinea el texto al centro
                 ),
                 maxLines = Int.MAX_VALUE, //Permite un número máximo de líneas ilimitado
-                modifier = Modifier.padding(16.dp) 
+                modifier = Modifier.padding(16.dp)
             )
         }
     }
