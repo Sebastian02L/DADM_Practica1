@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsEndWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -80,12 +82,13 @@ fun BodyContentScore(navController: NavController, playerName : String, nQuestio
 
     val mediaPlayer = MediaPlayer.create(context, R.raw.sonidoboton1)
     mediaPlayer.setVolume(5000.0f, 5000.0f)
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(brush), // Color degradado fondo
         //verticalArrangement = Arrangement.spacedBy(20.dp),
-        verticalArrangement = Arrangement.SpaceEvenly,
+        verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     )
     {
@@ -111,14 +114,14 @@ fun BodyContentScore(navController: NavController, playerName : String, nQuestio
         )*/
 
     }*/
-        CustomText("RESULTADOS", 55, modifier = Modifier.weight(1f))
+        CustomText("RESULTADOS", 40, modifier = Modifier.weight(0.5f))
 
         Card(
             colors = CardDefaults.cardColors(
                 containerColor = Color.Transparent // Color transparente para que se vea el gradiente
             ),
             modifier = Modifier
-                .padding(vertical = 4.dp, horizontal = 8.dp)
+                .padding(vertical = 10.dp, horizontal = 8.dp).weight(0.75f)
         ) {
             // Usamos un Box para aplicar el fondo y el clip
             Box(
@@ -126,9 +129,8 @@ fun BodyContentScore(navController: NavController, playerName : String, nQuestio
                     .background( // Aplica el gradiente de fondo
                         color = MaterialTheme.colorScheme.primary
                     )
-                    .clip(RoundedCornerShape(16.dp)) // Aplica el recorte a las esquinas
             ) {
-                CardContent("Puntuación Total: " + points, modifier = Modifier)
+                CardContent("Puntuación Total: " + points, Modifier.padding(5.dp))
             }
         }
 
@@ -137,7 +139,7 @@ fun BodyContentScore(navController: NavController, playerName : String, nQuestio
                 containerColor = Color.Transparent // Color transparente para que se vea el gradiente
             ),
             modifier = Modifier
-                .padding(vertical = 4.dp, horizontal = 8.dp)
+                .padding(vertical = 10.dp, horizontal = 8.dp).weight(0.75f)
         ) {
             // Usamos un Box para aplicar el fondo y el clip
             Box(
@@ -145,8 +147,6 @@ fun BodyContentScore(navController: NavController, playerName : String, nQuestio
                     .background( // Aplica el gradiente de fondo
                         color = MaterialTheme.colorScheme.primary
                     )
-
-                    .clip(RoundedCornerShape(16.dp)) // Aplica el recorte a las esquinas
             ) {
                 CardContent(
                     "Respuestas correctas: " + correctAnswers + "/$nQuestions",
@@ -160,7 +160,7 @@ fun BodyContentScore(navController: NavController, playerName : String, nQuestio
                 containerColor = Color.Transparent // Color transparente para que se vea el gradiente
             ),
             modifier = Modifier
-                .padding(vertical = 4.dp, horizontal = 8.dp)
+                .padding(vertical = 10.dp, horizontal = 8.dp).weight(0.75f)
         ) {
             // Usamos un Box para aplicar el fondo y el clip
             Box(
@@ -168,7 +168,6 @@ fun BodyContentScore(navController: NavController, playerName : String, nQuestio
                     .background( // Aplica el gradiente de fondo
                         color = MaterialTheme.colorScheme.primary
                     )
-                    .clip(RoundedCornerShape(16.dp)) // Aplica el recorte a las esquinas
             ) {
                 CardContent(
                     "Tiempo total: " + totalTime + "\n \n" + "TiempoMedio: " + averageTime,
@@ -179,7 +178,7 @@ fun BodyContentScore(navController: NavController, playerName : String, nQuestio
         }
 
         CustomElevatedButton(
-            "Volver a jugar",
+            "Volver a jugar", Modifier.weight(0.5f),
             onClick = {
                 mediaPlayer.start()
                 navController.navigate(Screen.GameOptions.route)
@@ -187,7 +186,7 @@ fun BodyContentScore(navController: NavController, playerName : String, nQuestio
             }
         ) { }
         CustomElevatedButton(
-            "Volver al menú",
+            "Volver al menú", Modifier.weight(0.5f),
             onClick = {
                 navController.navigate(Screen.MainMenu.route)
             }
@@ -237,15 +236,15 @@ fun BodyContentScore(navController: NavController, playerName : String, nQuestio
 }
 }
 @Composable
-private fun CardContent(name:String, modifier: Modifier)
+private fun CardContent(name:String, modifier: Modifier = Modifier)
 {
 
-    Row (modifier=Modifier.padding(24.dp)
+    Row (modifier=modifier
     )
     {
-        Column(modifier = modifier.weight(1f)
-            //.padding(bottom = buttonPadding)
-            .padding((24.dp))
+        Column(modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ){
             Text(
                 text = name,
@@ -253,12 +252,10 @@ private fun CardContent(name:String, modifier: Modifier)
                 fontFamily = FontFamily.Serif,
                 fontWeight = FontWeight.Bold,
                 color = Color.White,
-                modifier = modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center //modificacion del materialTheme
             )
 
         }
-
     }
 }
 

@@ -170,40 +170,42 @@ fun BodyContentRanking(navController: NavController,
             }
         }
 
-
-        //Boton ir pa atras
-        ElevatedButton(
-            onClick = { navController.navigate(Screen.MainMenu.route) },
-            shape = CircleShape,
-            colors = ButtonDefaults.buttonColors(Color.White),
-            modifier = Modifier
-                //.align(Alignment.BottomStart)
-                .align(Alignment.Start)
-                .padding(start = 10.dp)
-                .size(60.dp) //
-                .border(
-                    width = 5.dp,
-                    color = MaterialTheme.colorScheme.secondary,
-                    shape = CircleShape
-                )
-        ) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
+        //Columna que ocupa el resto del espacio de la pantalla para colocar el bootn de volver en la esquina izquierda
+        Column (Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Bottom,
+            horizontalAlignment = Alignment.Start){
+            ElevatedButton(
+                onClick = { navController.navigate(Screen.MainMenu.route) },
+                shape = CircleShape,
+                colors = ButtonDefaults.buttonColors(Color.White),
+                modifier = Modifier
+                    //.align(Alignment.BottomStart)
+                    .align(Alignment.Start)
+                    .padding(start = 20.dp, bottom = 20.dp)
+                    .size(60.dp) //
+                    .border(
+                        width = 5.dp,
+                        color = MaterialTheme.colorScheme.secondary,
+                        shape = CircleShape
+                    )
             ) {
-                Text(
-                    text = "<",
-                    fontFamily = FontFamily.Default,
-                    fontSize = 28.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
-                )
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "<",
+                        fontFamily = FontFamily.Default,
+                        fontSize = 28.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black
+                    )
+                }
             }
         }
 
-
-
     }
+
 
 
 

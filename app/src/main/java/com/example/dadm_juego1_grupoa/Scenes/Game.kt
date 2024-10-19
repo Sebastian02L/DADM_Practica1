@@ -148,7 +148,7 @@ fun BodyContentGame(navController: NavController, playerName : String, category 
             if (currentQuestionIndex < questionsAndAnswers.value.lastIndex) {
                 currentQuestionIndex++
             } else {
-                navController.navigate(Screen.Score.route+"/${playerName}/${nQuestions}/${correctAnswers}/${points}/${timePerQuestion.joinToString(",")}/${category}"){popUpTo(Screen.GameOptions.route){inclusive = true} }
+                navController.navigate(Screen.Score.route+"/${playerName}/${nQuestions}/${correctAnswers}/${points}/${timePerQuestion.joinToString(",")}/${category}"){popUpTo(Screen.Game.route+"/{playerName}/{category}/{difficulty}/{nQuestions}"){inclusive = true} }
             }
             selectedAnswer = null
             answerColor = Color.White
@@ -252,7 +252,7 @@ fun BodyContentGame(navController: NavController, playerName : String, category 
                                 if (currentQuestionIndex < questionsAndAnswers.value.lastIndex) {
                                     currentQuestionIndex++
                                 } else {
-                                    navController.navigate(Screen.Score.route+"/${playerName}/${nQuestions}/${correctAnswers}/${points}/${timePerQuestion.joinToString(",")}/${category}"){popUpTo(Screen.Game.route){inclusive = true} }
+                                    navController.navigate(Screen.Score.route+"/${playerName}/${nQuestions}/${correctAnswers}/${points}/${timePerQuestion.joinToString(",")}/${category}"){popUpTo(Screen.Game.route+"/{playerName}/{category}/{difficulty}/{nQuestions}"){inclusive = true} }
                                 }
                                 selectedAnswer = null
                                 answerColor = Color.White

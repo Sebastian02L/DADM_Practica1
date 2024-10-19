@@ -80,10 +80,10 @@ fun BodyContent(navController: NavController){
 
 
 @Composable
-fun CustomElevatedButton(text: String, onClick: () -> Unit, function: () -> Unit) {
+fun CustomElevatedButton(text: String, modifier : Modifier = Modifier, onClick: () -> Unit, function: () -> Unit) {
     ElevatedButton(
         onClick = onClick,
-        modifier = Modifier.padding(16.dp)
+        modifier = modifier.padding(16.dp)
             ,
         //shape = MaterialTheme.shapes.medium,
         shape = RoundedCornerShape(30.dp),
@@ -106,10 +106,10 @@ fun CustomElevatedButton(text: String, onClick: () -> Unit, function: () -> Unit
 
 
 @Composable
-fun CustomText(text: String, sizeText:Int,modifier: Modifier)  {
+fun CustomText(text: String, sizeText:Int, modifier: Modifier = Modifier)  {
     Box(
         contentAlignment = Alignment.Center,
-        //modifier = Modifier.fillMaxSize()
+        modifier = modifier
     ) {
         Text(
             text = text,
