@@ -91,14 +91,14 @@ fun BodyContentRanking(navController: NavController,
     val colors = listOf(
         MaterialTheme.colorScheme.background, // Azul claro
         MaterialTheme.colorScheme.surface // Color rosado claro
-    ) // Colores del degradado
+    ) //Colores del degradado
     val brush = Brush.linearGradient(colors)
 
 
     //VARIABLES
     val context = LocalContext.current
     val database = AppDatabase.getDatabase(context)
-
+    ////Insertar el ranking de forma asíncrona en la base de datos
     LaunchedEffect (Unit){
         CoroutineScope(Dispatchers.IO).launch{
             var rankingEntretenimiento : List<Ranking> = database.rankingDao().obtenerRanking("Entretenimiento")
@@ -137,16 +137,6 @@ fun BodyContentRanking(navController: NavController,
 
             //Titulo del juego
             CustomText("RANKING",55,Modifier)
-            /*Text(
-                text = "RANKING",
-                style = TextStyle(
-                    fontSize = 55.sp,
-                    fontWeight = FontWeight.Bold,
-                ),
-                color = Color(0xFFE8FA22),
-                //modifier = Modifier.padding(16.dp),
-                textAlign = TextAlign.Center,
-            )*/
 
             //Icono corona final
             Icon(
@@ -215,10 +205,6 @@ fun BodyContentRanking(navController: NavController,
         }
 
     }
-
-
-
-
 
 
 }
@@ -323,21 +309,6 @@ private fun CardContent(name:String, modifier: Modifier)
 
         }
 
-       /* ElevatedButton(onClick = { expanded.value = !expanded.value })
-        {
-            Text(if (!expanded.value) "Abrir Resultados" else "Cerrar Resultados")
-        }*/
-        /*IconButton(onClick = {expanded.value = !expanded.value })
-        {
-            Icon(
-                imageVector = if(expanded.value)Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
-                contentDescription = if(expanded.value) {
-                    stringResource((R.string.showLess))
-                }else
-                    stringResource((R.string.showMore))
-
-            )
-        }*/
     }
     }
 }
