@@ -34,64 +34,60 @@ import org.w3c.dom.Text
 //Contenido de la escena Start Screen
 @Composable
 fun BodyContent(navController: NavController){
-    //ESTILOS
-    val colors = listOf(
+    //Efecto de degradado para el fondo
+    val colors = listOf( //Colores del degradado
         MaterialTheme.colorScheme.background, // Azul claro
         MaterialTheme.colorScheme.surface // Color rosado claro
-    ) // Colores del degradado
+    )
     val brush = Brush.linearGradient(colors)
 
-
-    //VARIABLES
+    //Variable que define el contexto local de la pantalla
     val context = LocalContext.current
 
 
-    //SONIDOS
-    //no implementado porque el R.raw.click aun no me funciona bien
-//    val mediaPlayer = remember { MediaPlayer.create(context, R.raw.click) }
-
-
-    //CUERPO DE UI
+    //Cuerpo de la interfaz de usuario
+    //Columna que almacena el título del juego y los botones para acceder al resto de interfaces
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background( // Aplica el gradiente de fondo
+            .background( //Aplica el gradiente de fondo
                 brush = brush
             ),
+        //Se centran los elementos
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        CustomText("TRIVIAL GAME",66,Modifier)
         //Titulo del juego
+        CustomText("TRIVIAL GAME",66,Modifier)
 
+        //Boton para pasar a la pantalla del juego, paso de escenas con  navController
         CustomElevatedButton("Jugar",onClick = {
-            //FUNCION DE PASO ESCENAS CON navController (recordar usar el mediaPlayer?.start justo después)
             navController.navigate(Screen.GameOptions.route)
         },) { }
+        //Boton para pasar a la pantalla de ranking, paso de escenas con  navController
         CustomElevatedButton("Ranking",onClick = {
             navController.navigate(Screen.Ranking.route)
-            //FUNCION DE PASO ESCENAS CON navController (recordar usar el mediaPlayer?.start justo después)
 
         },) { }
+        //Botn para finalizar la aplicacion (salir)
         CustomElevatedButton("Salir",onClick = {
             (context as? Activity)?.finish()
         },) { }
     }
 }
 
-
+//Funcion reutilizable para crear botones con un estilo personalizado
 @Composable
 fun CustomElevatedButton(text: String, modifier : Modifier = Modifier, onClick: () -> Unit, function: () -> Unit) {
     val context = LocalContext.current
     ElevatedButton(
         onClick = {
-            // Reproducir efecto de sonido al hacer pulsar boton
+            //Reproducir efecto de sonido al hacer pulsar boton
             (context as? MainActivity)?.playClickSound()
-            // Ejecuta la acción del botón
+            //Ejecuta la acción del botón
             onClick()
         },
         modifier = modifier.padding(16.dp),
-        //shape = MaterialTheme.shapes.medium,
         shape = RoundedCornerShape(30.dp),
         border = BorderStroke(5.dp, MaterialTheme.colorScheme.secondary),
         colors = ButtonDefaults.buttonColors(
@@ -110,7 +106,7 @@ fun CustomElevatedButton(text: String, modifier : Modifier = Modifier, onClick: 
 }
 
 
-
+//Función reutilizable para crear un estilo de texto personalizado
 @Composable
 fun CustomText(text: String, sizeText:Int, modifier: Modifier = Modifier)  {
     Box(
@@ -125,7 +121,7 @@ fun CustomText(text: String, sizeText:Int, modifier: Modifier = Modifier)  {
                 fontWeight = FontWeight.Bold,
             ),
             color = MaterialTheme.colorScheme.onPrimary,
-            modifier = Modifier//.padding(16.dp)
+            modifier = Modifier
                 .offset(1.dp, 1.dp),
             textAlign = TextAlign.Center,
         )
