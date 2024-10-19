@@ -12,9 +12,6 @@ interface PreguntaDao {
     @Query("SELECT * FROM preguntas")
     fun obtenerTodasLasPreguntas(): List<Pregunta>
 
-    @Query("SELECT * FROM preguntas WHERE tipo = :tipo")
-    fun obtenerPreguntasPorTipo(tipo: String): List<Pregunta>
-
     @Query("SELECT * FROM preguntas WHERE tipo = :tipo AND dificultad = :dificultad ORDER BY RANDOM() LIMIT :numPreguntas")
     fun obtenerPreguntasPorDificultad(tipo: String, dificultad : String, numPreguntas: Int): List<Pregunta>
 
