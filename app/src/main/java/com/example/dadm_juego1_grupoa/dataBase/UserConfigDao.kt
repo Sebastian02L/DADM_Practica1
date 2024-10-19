@@ -8,7 +8,7 @@ import androidx.room.Upsert
 
 @Dao
 interface UserConfigDao {
-    @Upsert
+    @Insert
     fun insertarUserConfig(userConfig: UserConfig)
 
     @Query("SELECT * FROM userConfig LIMIT 1")
