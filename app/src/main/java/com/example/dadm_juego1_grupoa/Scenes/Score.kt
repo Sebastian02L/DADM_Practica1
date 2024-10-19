@@ -53,79 +53,60 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun BodyContentScore(navController: NavController, playerName : String, nQuestions : Int, correctAnswers : Int, points : Int, timePerQuestion : List<Int>, category : String){
-    //ESTILOS
+    //Efecto de degradado para el fondo
     val colors = listOf(
         MaterialTheme.colorScheme.background, // Azul claro
         MaterialTheme.colorScheme.surface // Color rosado claro
-    ) // Colores del degradado
+    ) //Colores del degradado
     val brush = Brush.linearGradient(colors)
 
-    //VARIABLES
+    //variables:
+    //Se utiliza rememberSaveable para mantener el estado y se obtiene el contexto de la aplicación
+    //Conexión con la base de datos para guardar en el ranking al finalizar la partida
     val context = LocalContext.current
     var totalTime : Int by rememberSaveable { mutableStateOf(0) }
     var averageTime : Int by rememberSaveable { mutableStateOf(0) }
     val database = AppDatabase.getDatabase(context)
 
+    //Insertar el ranking de forma asíncrona en la base de datos
     LaunchedEffect (Unit){
         CoroutineScope (Dispatchers.IO).launch{
             database.rankingDao().insertarRanking(Ranking(nombre = playerName, puntuacion = points, categoria = category))
         }
     }
 
+    //Se calculan las estadisticas del tiempo total y tiempo medio por pegunta
     var sumTime = 0
     for (time in timePerQuestion){
         sumTime += time
     }
-
     totalTime = sumTime
     averageTime = sumTime / timePerQuestion.size
 
-
-
+    //Columna que almacena los textos y tarjetas de la interfaz
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(brush), // Color degradado fondo
-        //verticalArrangement = Arrangement.spacedBy(20.dp),
+            .background(brush), //Aplicar degradado
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     )
     {
-        /*
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(20.dp) // Añadir padding al Row si es necesario
-            .weight(1.5f)
-    ) {
-
-        //Texto
-        CustomText("RESULTADOS", 55, modifier = Modifier.weight(1.5f))
-        /*
-        Text(
-            text = "RESULTADOS",
-            style = TextStyle(
-                fontSize = 55.sp,
-                fontWeight = FontWeight.Bold,
-            ),
-            color = Color(0xFFEFB8C8),
-            //modifier = Modifier.padding(16.dp),
-            textAlign = TextAlign.Center,
-        )*/
-
-    }*/
+        //Texto para mostrar el titulo de la pantalla
         CustomText("RESULTADOS", 40, modifier = Modifier.weight(0.5f))
 
+        //Tarjeta para mostrar la puntuacion total
         Card(
             colors = CardDefaults.cardColors(
-                containerColor = Color.Transparent // Color transparente para que se vea el gradiente
+                containerColor = Color.Transparent //Color transparente para que se vea el efecto de gradiente
             ),
             modifier = Modifier
                 .padding(vertical = 10.dp, horizontal = 8.dp).weight(0.75f)
         ) {
-            // Usamos un Box para aplicar el fondo y el clip
+            //Usamos un Box para aplicar el fondo y el clip
             Box(
                 modifier = Modifier
-                    .background( // Aplica el gradiente de fondo
+                    .background(
                         color = MaterialTheme.colorScheme.primary
                     )
             ) {
@@ -133,17 +114,18 @@ fun BodyContentScore(navController: NavController, playerName : String, nQuestio
             }
         }
 
+        //Tarjeta para mostrar el numero de respuestas correctas
         Card(
             colors = CardDefaults.cardColors(
-                containerColor = Color.Transparent // Color transparente para que se vea el gradiente
+                containerColor = Color.Transparent //Color transparente para que se vea el efecto de gradiente
             ),
             modifier = Modifier
                 .padding(vertical = 10.dp, horizontal = 8.dp).weight(0.75f)
         ) {
-            // Usamos un Box para aplicar el fondo y el clip
+            //Usamos un Box para aplicar el fondo y el clip
             Box(
                 modifier = Modifier
-                    .background( // Aplica el gradiente de fondo
+                    .background(
                         color = MaterialTheme.colorScheme.primary
                     )
             ) {
@@ -154,14 +136,15 @@ fun BodyContentScore(navController: NavController, playerName : String, nQuestio
             }
         }
 
+        //Tarjeta para mostrar las estadisticas del tiempo
         Card(
             colors = CardDefaults.cardColors(
-                containerColor = Color.Transparent // Color transparente para que se vea el gradiente
+                containerColor = Color.Transparent //Color transparente para que se vea el efecto de gradiente
             ),
             modifier = Modifier
                 .padding(vertical = 10.dp, horizontal = 8.dp).weight(0.75f)
         ) {
-            // Usamos un Box para aplicar el fondo y el clip
+            //Usamos un Box para aplicar el fondo y el clip
             Box(
                 modifier = Modifier
                     .background( // Aplica el gradiente de fondo
@@ -172,10 +155,11 @@ fun BodyContentScore(navController: NavController, playerName : String, nQuestio
                     "Tiempo total: " + totalTime + "\n \n" + "TiempoMedio: " + averageTime,
                     modifier = Modifier
                 )
-                //CardContent("Tiempo total: \n\n Tiempo medio:", modifier = Modifier)
+
             }
         }
 
+        //Boton para pasar a la pantalla del juego, paso de escenas con  navController
         CustomElevatedButton(
             "Volver a jugar", Modifier.weight(0.5f),
             onClick = {
@@ -183,60 +167,23 @@ fun BodyContentScore(navController: NavController, playerName : String, nQuestio
 
             }
         ) { }
+        //Boton para pasar almenu principal, paso de escenas con  navController
         CustomElevatedButton(
             "Volver al menú", Modifier.weight(0.5f),
             onClick = {
                 navController.navigate(Screen.MainMenu.route)
             }
         ) { }
-        /*ElevatedButton(
-            onClick = {
-                mediaPlayer.start()
-                navController.navigate(Screen.GameOptions.route)
 
-            },
-            modifier = Modifier.padding(6.dp),
-            shape = MaterialTheme.shapes.large,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFFEFB8C8)
-            )
-        ) {
-            Text(
-                text = "Volver a jugar",
-                fontSize = 32.sp,
-                fontWeight = FontWeight.Bold,
-//              fontFamily = montserratFontFamily,
-                color = Color.White
-            )
-        }
 
-        ElevatedButton(
-            onClick = {
-                navController.navigate(Screen.MainMenu.route)
+    }
+    }
 
-            },
-            modifier = Modifier.padding(6.dp),
-            shape = MaterialTheme.shapes.large,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFFEFB8C8)
-            )
-        ) {
-            Text(
-                text = "Volver al menú",
-                fontSize = 32.sp,
-                fontWeight = FontWeight.Bold,
-//              fontFamily = montserratFontFamily,
-                color = Color.White
-            )
-        }
-        */
-
-}
-}
+//Muestra el contenido de las tarjetas de manera estilizada
 @Composable
 private fun CardContent(name:String, modifier: Modifier = Modifier)
 {
-
+    //Organiza la información de la tarjeta en una fila y columna, centrando el texto
     Row (modifier=modifier
     )
     {
