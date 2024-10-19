@@ -28,6 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.navigation.NavController
+import com.example.dadm_juego1_grupoa.MainActivity
 import org.w3c.dom.Text
 
 //Contenido de la escena Start Screen
@@ -81,10 +82,15 @@ fun BodyContent(navController: NavController){
 
 @Composable
 fun CustomElevatedButton(text: String, modifier : Modifier = Modifier, onClick: () -> Unit, function: () -> Unit) {
+    val context = LocalContext.current
     ElevatedButton(
-        onClick = onClick,
-        modifier = modifier.padding(16.dp)
-            ,
+        onClick = {
+            // Reproducir efecto de sonido al hacer pulsar boton
+            (context as? MainActivity)?.playClickSound()
+            // Ejecuta la acción del botón
+            onClick()
+        },
+        modifier = modifier.padding(16.dp),
         //shape = MaterialTheme.shapes.medium,
         shape = RoundedCornerShape(30.dp),
         border = BorderStroke(5.dp, MaterialTheme.colorScheme.secondary),

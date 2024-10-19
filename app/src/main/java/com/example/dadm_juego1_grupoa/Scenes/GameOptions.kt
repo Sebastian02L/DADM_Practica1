@@ -1,6 +1,8 @@
 package com.example.dadm_juego1_grupoa.Scenes
 
 import android.graphics.Paint.Align
+import android.os.Handler
+import android.os.Looper
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -53,10 +55,12 @@ import androidx.compose.ui.input.pointer.motionEventSpy
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.createFontFamilyResolver
+import com.example.dadm_juego1_grupoa.MainActivity
 import com.example.dadm_juego1_grupoa.dataBase.AppDatabase
 import com.example.dadm_juego1_grupoa.dataBase.UserConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -138,8 +142,16 @@ fun BodyContentGameOptions(navController: NavController){
                                 else { playerName}, color = Color.Black) })
 
         Row {
+            val context = LocalContext.current
             ElevatedButton(
-                onClick = { navController.navigate(Screen.MainMenu.route) },
+                onClick = {
+                    (context as? MainActivity)?.playBackSound()
+                    // DELAY
+                    Handler(Looper.getMainLooper()).postDelayed({
+
+                        navController.navigate(Screen.MainMenu.route)
+                    }, 600)
+                },
                 shape = CircleShape,
                 colors = ButtonDefaults.buttonColors(Color.White),
                 modifier = Modifier
@@ -297,11 +309,16 @@ fun StartGameButton(text : String, navController: NavController, modifier: Modif
     var allValuesCorrect by remember { mutableStateOf(false)}
     allValuesCorrect = CheckNoDefaultValues()
     var canQuery by remember { mutableStateOf(false)}
+    val context = LocalContext.current
+
 
     ElevatedButton(modifier = modifier.size(width = 250.dp, height = 50.dp).padding(horizontal = 5.dp),
         onClick =  {
             if(allValuesCorrect){
                 canQuery = true
+
+                (context as? MainActivity)?.playClickSound()
+
                 navController.navigate(Screen.Game.route+"/${playerName}/${selectedCategory}/${selectedDifficulty}/${selectedNumber}"){popUpTo(Screen.GameOptions.route){inclusive = true} }}},
         colors = ButtonDefaults.buttonColors(Color.White)) {
         Text(text = "${text}",

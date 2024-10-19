@@ -80,8 +80,7 @@ fun BodyContentScore(navController: NavController, playerName : String, nQuestio
     totalTime = sumTime
     averageTime = sumTime / timePerQuestion.size
 
-    val mediaPlayer = MediaPlayer.create(context, R.raw.sonidoboton1)
-    mediaPlayer.setVolume(5000.0f, 5000.0f)
+
 
     Column(
         modifier = Modifier
@@ -180,7 +179,6 @@ fun BodyContentScore(navController: NavController, playerName : String, nQuestio
         CustomElevatedButton(
             "Volver a jugar", Modifier.weight(0.5f),
             onClick = {
-                mediaPlayer.start()
                 navController.navigate(Screen.GameOptions.route)
 
             }

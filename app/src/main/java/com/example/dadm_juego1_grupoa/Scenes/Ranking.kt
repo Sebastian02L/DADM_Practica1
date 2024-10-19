@@ -4,6 +4,8 @@ import android.graphics.Paint.Align
 import android.graphics.drawable.Drawable
 import android.media.MediaPlayer
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -65,6 +67,7 @@ import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.text.font.FontFamily
+import com.example.dadm_juego1_grupoa.MainActivity
 import com.example.dadm_juego1_grupoa.dataBase.AppDatabase
 import com.example.dadm_juego1_grupoa.dataBase.Ranking
 import kotlinx.coroutines.delay
@@ -175,7 +178,14 @@ fun BodyContentRanking(navController: NavController,
             verticalArrangement = Arrangement.Bottom,
             horizontalAlignment = Alignment.Start){
             ElevatedButton(
-                onClick = { navController.navigate(Screen.MainMenu.route) },
+                onClick = {
+                    (context as? MainActivity)?.playBackSound()
+                    // DELAY
+                    Handler(Looper.getMainLooper()).postDelayed({
+
+                        navController.navigate(Screen.MainMenu.route)
+                    }, 600)
+                },
                 shape = CircleShape,
                 colors = ButtonDefaults.buttonColors(Color.White),
                 modifier = Modifier

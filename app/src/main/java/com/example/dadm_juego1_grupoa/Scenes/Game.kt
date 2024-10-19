@@ -42,6 +42,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.dadm_juego1_grupoa.MainActivity
 import com.example.dadm_juego1_grupoa.dataBase.AppDatabase
 import com.example.dadm_juego1_grupoa.dataBase.Pregunta
 import com.example.dadm_juego1_grupoa.ui.theme.DADM_juego1_GrupoATheme
@@ -240,6 +241,13 @@ fun BodyContentGame(navController: NavController, playerName : String, category 
                             answerColor = if (answer == correctAnswer) Color.Green else Color.Red
                             areButtonsEnabled = false
                             timePerQuestion.add(30 - time)
+
+                            //REPRODUCIR SONIDOS SI CORRECTO O NO CORRECTO
+                            if (answer == correctAnswer) {
+                                (context as MainActivity).playCorrectAswer() // Asegúrate de que lo llamas desde la instancia correcta
+                            } else {
+                                (context as MainActivity).playbadAnswer()
+                            }
 
                             coroutineScope.launch {
                                 delay(2000L)

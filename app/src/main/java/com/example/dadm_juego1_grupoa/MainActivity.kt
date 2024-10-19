@@ -1,6 +1,8 @@
 package com.example.dadm_juego1_grupoa
 
 import android.content.Context
+import android.media.AudioAttributes
+import android.media.SoundPool
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -35,9 +37,35 @@ import com.example.dadm_juego1_grupoa.ui.theme.DADM_juego1_GrupoATheme
 import java.util.concurrent.Executors
 
 class MainActivity : ComponentActivity() {
+
+    //SOUND POOL PARA EFECTOS DE SONIDO
+    private lateinit var soundPool: SoundPool
+    private var soundId1: Int = 0
+    private var soundId2: Int = 0
+    private var soundId3: Int = 0
+    private var soundId4: Int = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        //CARGAR SONIDO EN SOUND POOL
+        val audioAttributes = AudioAttributes.Builder()
+            .setUsage(AudioAttributes.USAGE_MEDIA)
+            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+            .build()
+
+        soundPool = SoundPool.Builder()
+            .setMaxStreams(2)
+            .setAudioAttributes(audioAttributes)
+            .build()
+
+        soundId1 = soundPool.load(this, R.raw.sonidoboton1, 1)
+        soundId2 = soundPool.load(this, R.raw.botonback, 1)
+        soundId3 = soundPool.load(this, R.raw.correctanswer, 1)
+        soundId4 = soundPool.load(this, R.raw.failanswer, 1)
+
+
         setContent {
             DADM_juego1_GrupoATheme {
                 hideSystemUI()
@@ -48,6 +76,7 @@ class MainActivity : ComponentActivity() {
     }
 
 
+    //FUNCIONES GESTION BASE DATOS
     @Composable
     fun cargarBaseDatos() {
         val context = LocalContext.current
@@ -119,6 +148,25 @@ class MainActivity : ComponentActivity() {
                 or View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                 or View.SYSTEM_UI_FLAG_FULLSCREEN)
+    }
+
+    //FUNCIONES PARA SONIDO
+    fun playClickSound() {
+        soundPool.play(soundId1, 1f, 1f, 0, 0, 1f)
+    }
+    fun playBackSound() {
+        soundPool.play(soundId2, 1f, 1f, 0, 0, 1f)
+    }
+    fun playCorrectAswer() {
+        soundPool.play(soundId3, 1f, 1f, 0, 0, 1f)
+    }
+    fun playbadAnswer() {
+        soundPool.play(soundId4, 1f, 1f, 0, 0, 1f)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        soundPool.release()
     }
 }
 
