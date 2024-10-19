@@ -65,17 +65,16 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 //Variables globales donde se almacena la ultima configuracion utilizada
-//Estas variables se pasan a la siguiente escena para realizar las consultas a la BD
+//Estas variables se pasan a la siguiente escena para realizar las consultas a la Base de Datos
 var playerName by mutableStateOf("")
 var selectedCategory by mutableStateOf("")
 var selectedNumber by mutableStateOf(15)
 var selectedDifficulty by mutableStateOf("Fácil")
 
-var userConfiguration : UserConfig? = null
-
 @Composable
 fun BodyContentGameOptions(navController: NavController){
 
+    //Pedimos a la base de datos la ultima configuracion utilizada
     LoadLastConfiguration()
 
     val colors = listOf(
@@ -95,10 +94,9 @@ fun BodyContentGameOptions(navController: NavController){
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally){
 
-        //Fila con el boton para salir y titulo de la pantalla
+        //Fila que contiene al cartel de titulo de la pantalla (antes habia otro elemento, por eso hay una fila)
         Row(modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center){
-            //Boton de salir
 
             //Padding con lo que tiene arriba 
             CreateMainTitleCard("AJUSTES DE LA PARTIDA", Modifier.padding(start = 25.dp, end= 10.dp).weight(6f))
@@ -141,8 +139,10 @@ fun BodyContentGameOptions(navController: NavController){
             label = {Text( text = if(playerName == ""){ "Introduce tu nombre..." }
                                 else { playerName}, color = Color.Black) })
 
+        //Fila que contiene al boton de volver y el boton de comenzar partida
         Row {
             val context = LocalContext.current
+            //Boton de volver
             ElevatedButton(
                 onClick = {
                     (context as? MainActivity)?.playBackSound()
@@ -178,14 +178,14 @@ fun BodyContentGameOptions(navController: NavController){
                     )
                 }
             }
-
-
+            //Funcion que crea el boton de comenzar partida
             StartGameButton("¡Comenzar Partida!", navController, Modifier.weight(1.5f).padding(bottom = 40.dp))
 
         }
     }
 }
 
+//Funcion que crea el cartel de titulo de la UI
 @Composable
 fun CreateMainTitleCard(title : String, modifier: Modifier = Modifier){
     OutlinedCard(colors = CardDefaults.cardColors(
@@ -196,7 +196,7 @@ fun CreateMainTitleCard(title : String, modifier: Modifier = Modifier){
     ) {
         //Contenedor para poder alinear el text dentro de la tarjeta
         Box(
-            modifier = Modifier.fillMaxSize(), // El Box ocupa todo el tamaño de la Card
+            modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
             Text(
@@ -210,6 +210,7 @@ fun CreateMainTitleCard(title : String, modifier: Modifier = Modifier){
     }
 }
 
+//Funcion que crea los carteles de titulo que estan encima de los botones
 @Composable
 fun CreateTitleCard(title : String, modifier : Modifier = Modifier){
     OutlinedCard(
@@ -234,13 +235,14 @@ fun CreateTitleCard(title : String, modifier : Modifier = Modifier){
     }
 }
 
+//Funcion que crea los botones con los numeros de preguntas
 @Composable//
 fun CreateNumberButton(number : Int){
     val context = LocalContext.current
 
     ElevatedButton(modifier = Modifier.size(width = 80.dp, height = 50.dp).padding(horizontal = 5.dp),
         onClick =  {
-            // Reproducir efecto de sonido al hacer pulsar boton
+            //Reproducir efecto de sonido al hacer pulsar boton
             (context as? MainActivity)?.playbeep()
             selectedNumber = number },
         colors = if(selectedNumber != number) { ButtonDefaults.buttonColors(Color.White) }
@@ -253,13 +255,14 @@ fun CreateNumberButton(number : Int){
     }
 }
 
+//Funcion que crea los botones con la dificultad de las preguntas
 @Composable//
 fun CreateStringButton(text : String){
     val context = LocalContext.current
 
     ElevatedButton(modifier = Modifier.size(width = 110.dp, height = 60.dp).padding(horizontal = 5.dp),
         onClick =  {
-            // Reproducir efecto de sonido al hacer pulsar boton
+            //Reproducir efecto de sonido al hacer pulsar boton
             (context as? MainActivity)?.playbeep()
 
             selectedDifficulty = text },
@@ -272,6 +275,7 @@ fun CreateStringButton(text : String){
     }
 }
 
+//Funcion que crea el boton para seleccionar la categoria de las preguntas con un menu desplegable
 @Composable//
 fun Dropdown() {
     val context = LocalContext.current
@@ -302,18 +306,18 @@ fun Dropdown() {
         // Menú desplegable
         DropdownMenu(
             expanded = expanded,
-            onDismissRequest = { expanded = false } // Cierra el menú si se hace clic fuera
+            onDismissRequest = { expanded = false } // Cierra el menú si se pulsa afuera del menu
         ) {
-            // Opciones del menú
+            // Opciones del menu (facilitando el poder agregar mas categorias)
             val options = listOf("Entretenimiento", "Cultura General")
 
             for (option in options) {
                 DropdownMenuItem(
                     text = { Text(text = option) }, // Cambiar el uso aquí
                     onClick = {
-                        // Reproducir efecto de sonido al hacer pulsar boton
+                        //Reproducir efecto de sonido al hacer pulsar boton
                         (context as? MainActivity)?.playbeep()
-                        // Actualiza la opción seleccionada
+                        //Actualiza la opción seleccionada
                         selectedCategory = option
                         expanded = false // Cierra el menú después de seleccionar
                     }
@@ -336,9 +340,9 @@ fun StartGameButton(text : String, navController: NavController, modifier: Modif
         onClick =  {
             if(allValuesCorrect){
                 canQuery = true
-
+                //Reproducir efecto de sonido al hacer pulsar boton
                 (context as? MainActivity)?.playClickSound()
-
+                //Navegamos a la siguiente escena pasandole los parametros que necesita
                 navController.navigate(Screen.Game.route+"/${playerName}/${selectedCategory}/${selectedDifficulty}/${selectedNumber}"){popUpTo(Screen.GameOptions.route){inclusive = true} }}},
         colors = ButtonDefaults.buttonColors(Color.White)) {
         Text(text = "${text}",
@@ -363,11 +367,13 @@ fun LoadLastConfiguration() {
         val context = LocalContext.current
         val database = AppDatabase.getDatabase(context)
 
-        //Mediante una corutina hacemos la peticion, si la tabla esta vacia capturamos la excepcion, si la tabla tiene
-        //datos guardados, los extraemos y los guardamos en la variable userConfiguration
+        //Mediante una corutina hacemos la peticion, si la tabla esta vacia capturamos la excepcion para que el programa siga funcionando.
+        //Todas las consultas a la BD deben hacerse desde un hilo secundario para no bloquear al hilo principal
         LaunchedEffect(Unit) {
             try {
                 CoroutineScope(Dispatchers.IO).launch {
+                    //Se realiza la peticion a la Base de Datos, si nos devuelve un objeto, extraemos los valores y las guardamos en las
+                    //variables globales.
                     val configuration: UserConfig? = database.userConfigDao().obtenerUserConfig()
 
                     configuration?.let {
@@ -375,10 +381,6 @@ fun LoadLastConfiguration() {
                         selectedCategory = configuration.categoria
                         selectedNumber = configuration.numPreguntas
                         selectedDifficulty = configuration.dificultad
-                    }
-                    //Indicamos que la s intrucciones dentro del bloque {} lo ejecute el hilo principal
-                    withContext(Dispatchers.Main) {
-                        userConfiguration = configuration
                     }
                 }
             } catch (e: Exception){}
