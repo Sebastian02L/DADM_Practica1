@@ -152,7 +152,7 @@ fun BodyContentScore(navController: NavController, playerName : String, nQuestio
                     )
             ) {
                 CardContent(
-                    "Tiempo total: " + totalTime + "\n \n" + "TiempoMedio: " + averageTime,
+                    "Tiempo total: " + totalTime + "\n \n" + "Tiempo Medio: " + averageTime,
                     modifier = Modifier
                 )
 
