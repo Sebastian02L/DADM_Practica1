@@ -53,14 +53,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-/*@Preview
-@Composable
-fun Preview(){
-    DADM_juego1_GrupoATheme {
-        BodyContentGame()
-    }
-}*/
-
 //Función principal que gestiona el contenido del juego
 @Composable
 fun BodyContentGame(navController: NavController, playerName : String, category : String, difficulty : String, nQuestions : Int){
@@ -73,15 +65,17 @@ fun BodyContentGame(navController: NavController, playerName : String, category 
     ) //Definicion del degradado para el fondo
     val brush = Brush.linearGradient(colors)
 
-    //Variables mutables para manejar el estado del progreso del juego
+    //Variables para la gestión del acceso a la base de datos
     val context = LocalContext.current
     val database = AppDatabase.getDatabase(context)
-    var questionsCompleted: Int by rememberSaveable { mutableStateOf(1) }
 
-    //Variables para mostrar en la pantalla de resultados
+    //Variables mutables para manejar el estado del progreso del juego
+    var questionsCompleted: Int by rememberSaveable { mutableStateOf(1) }
+    var time: Int by rememberSaveable { mutableStateOf(30) }
+
+    //Variables para mostrar estadisticas en la pantalla de resultados
     var correctAnswers: Int by rememberSaveable { mutableStateOf(0) }
     var points: Int by rememberSaveable { mutableStateOf(0) }
-    var time: Int by rememberSaveable { mutableStateOf(30) }
     var timePerQuestion: MutableList<Int> by remember { mutableStateOf(mutableListOf()) }
 
     // Variables para almacenar las preguntas y respuestas
@@ -129,6 +123,7 @@ fun BodyContentGame(navController: NavController, playerName : String, category 
             val qaList = questionsDataBase.map { question ->
                 question.pregunta to listOf(question.respuestaC, question.respuestaI1, question.respuestaI2, question.respuestaI3)
             }
+
             //Recopilación de puntos por cada pregunta
             val pointsList: MutableList<Int> = mutableListOf()
             for (question in questionsDataBase){
@@ -269,7 +264,7 @@ fun BodyContentGame(navController: NavController, playerName : String, category 
                                 questionsCompleted++
                                 if (answer == correctAnswer) {
                                     points += pointsPerQuestion[currentQuestionIndex] - (30-time)
-                                    correctAnswers++ //Pausa antes de avanzar a la siguiente pregunta
+                                    correctAnswers++
                                 }
 
                                 //Avanzar a la siguiente pregunta o navegar a la pantalla de resultados
@@ -286,7 +281,7 @@ fun BodyContentGame(navController: NavController, playerName : String, category 
                         }
                     },
                     //Cada respuesta se muestra como una tarjeta. El color de la tarjeta cambia dependiendo
-                    //de si la respuesta seleccionada coincide con la respuesta actual
+                    //de si coincide con la respuesta seleccionada o no.
                     modifier = Modifier.weight(1f),
                     color = if (selectedAnswer == answer) answerColor else Color.White
                 )
